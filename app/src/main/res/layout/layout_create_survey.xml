@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/survey_info_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            style="@style/TextAppearance.Blovote.Title"
+            android:hint="@string/hint_title"
+            android:inputType="text|textMultiLine"
+            android:cursorVisible="true"
+            android:background="@android:color/transparent" />
+
+        <View
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="4dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/respondents_count"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
+
+            <EditText
+                android:id="@+id/edit_text_respondents_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/ten"
+                android:inputType="number"
+                android:maxLength="9"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:background="@android:color/transparent" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reward_size"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
+
+            <!--<View-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:layout_weight="1" />-->
+
+            <EditText
+                android:id="@+id/edit_text_reward_size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/ten"
+                android:inputType="number"
+                android:maxLength="9"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:background="@android:color/transparent" />
+
+            <Spinner
+                android:id="@+id/spinned_reward_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/eth_unit"/>
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/target_audience_filter_questions"
+            android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
+
+        <TextView
+            android:id="@+id/target_audience_no_questions_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/no_questions"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_filter_questions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:scrollbars="none"/>
+
+
+        <View
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/main_questions"
+            android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
+
+        <TextView
+            android:id="@+id/main_no_questions_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/no_questions"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_main_questions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:scrollbars="none"/>
+
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

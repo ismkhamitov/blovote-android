@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Blovote</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="questions_descr">%s questions</string>
+    <string name="hint_title">Title</string>
+    <string name="respondents_count">Respondents count:</string>
+    <string name="ten">10</string>
+    <string name="reward_size">Reward size:</string>
+    <string name="target_audience_filter_questions">Target audience filter questions</string>
+    <string name="no_questions">No questions</string>
+    <string name="main_questions">Main questions</string>
+    <string name="create">Create</string>
+
+    <string-array name="eth_unit">
+        <item>wei</item>
+        <item>Kwei</item>
+        <item>Mwei</item>
+        <item>Gwei</item>
+        <item>microether</item>
+        <item>milliether</item>
+        <item>Eth</item>
+    </string-array>
+
+</resources>
