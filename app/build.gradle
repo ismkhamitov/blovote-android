@@ -55,6 +55,7 @@ kotlin {
     }
 }
 
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -79,6 +80,7 @@ dependencies {
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxjava:$pRxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$pRxAndroidVersion"
 
     // Room
     implementation "android.arch.lifecycle:livedata:$pLifecycleVersion"

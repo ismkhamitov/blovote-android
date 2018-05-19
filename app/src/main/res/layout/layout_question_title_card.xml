@@ -8,15 +8,18 @@
     android:layout_marginEnd="0dp">
 
     <TextView
+        android:id="@+id/question_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textAppearance="@style/TextAppearance.Blovote.Body1"
         android:layout_marginEnd="8dp"
+        android:textStyle="bold"
         android:layout_gravity="center_horizontal"
         android:text="question textfjdaksl;fjks laf;sdjkfa jlf;d slafjkfjs ;fdjsfk ;lsaf jds k;al fjds kl;j?"/>
 
     <ImageView
+        android:id="@+id/question_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_clear"

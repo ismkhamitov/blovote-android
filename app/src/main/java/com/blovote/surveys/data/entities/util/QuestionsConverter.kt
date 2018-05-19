@@ -1,13 +1,16 @@
 package com.blovote.surveys.data.entities.util
 
 import android.arch.persistence.room.TypeConverter
+import com.blovote.BuildConfig
 import com.blovote.surveys.data.entities.Question
+import com.blovote.surveys.data.entities.QuestionType
 import com.blovote.surveys.data.entities.SurveyState
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.LinkedList
 
 const val TITLE_KEY = "title"
+const val TYPE_KEY = "type"
 const val POINTS_KEY = "points"
 
 class QuestionsConverter {
@@ -23,6 +26,7 @@ class QuestionsConverter {
 
             val questionObj = JSONObject()
             questionObj.put(TITLE_KEY, question.title)
+            questionObj.put(TYPE_KEY, question.type.ordinal)
             questionObj.put(POINTS_KEY, pointsArray)
 
             questionsArray.put(questionObj)
@@ -45,7 +49,15 @@ class QuestionsConverter {
                 points.add(pointsJson.getString(j))
             }
 
-            questions.add(Question(questionJson.getString(TITLE_KEY), points))
+            val title = questionJson.getString(TITLE_KEY)
+
+            val typeIndex = questionJson.getInt(TYPE_KEY)
+            if (BuildConfig.DEBUG) {
+                assert(typeIndex >= 0 && typeIndex < QuestionType.values().size)
+            }
+            val type = QuestionType.values()[typeIndex]
+
+            questions.add(Question(title, type, points))
         }
 
         return questions
@@ -59,6 +71,16 @@ class QuestionsConverter {
     @TypeConverter
     fun stateFromInt(int : Int) : SurveyState {
         return SurveyState.values()[int]
+    }
+
+    @TypeConverter
+    fun questionTypeToInt(questionType: QuestionType) : Int {
+        return questionType.ordinal
+    }
+
+    @TypeConverter
+    fun intToQuestionType(int: Int) : QuestionType {
+        return QuestionType.values()[int]
     }
 
 }

@@ -17,9 +17,9 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:textStyle="bold"
-            style="@style/TextAppearance.Blovote.Title"
+            android:textAppearance="@style/TextAppearance.Blovote.Title"
             android:hint="@string/hint_title"
             android:inputType="text|textMultiLine"
             android:cursorVisible="true"
@@ -28,7 +28,7 @@
         <View
             android:layout_height="0.5dp"
             android:layout_width="match_parent"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:background="@color/colorPrimaryDark"/>
 
         <LinearLayout
@@ -73,11 +73,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/reward_size"
                 android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
-
-            <!--<View-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:layout_weight="1" />-->
 
             <EditText
                 android:id="@+id/edit_text_reward_size"

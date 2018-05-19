@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.blovote.R
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.domain.SurveysInteractor
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.disposables.DisposableHelper
 import io.reactivex.schedulers.Schedulers
@@ -69,7 +70,7 @@ class SurveysAdapter(val surveysInteractor: SurveysInteractor) : RecyclerView.Ad
 
     fun startObservingSurveys(lifecycleOwner: LifecycleOwner) {
         DisposableHelper.set(disposableRef, surveysInteractor.observeExistingSurveys(lifecycleOwner)
-                .observeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ surveysList ->
                     surveys.clear()
                     surveys.replaceAll(surveysList)

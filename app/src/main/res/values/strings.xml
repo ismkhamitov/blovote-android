@@ -15,6 +15,12 @@
     <string name="no_questions">No questions</string>
     <string name="main_questions">Main questions</string>
     <string name="create">Create</string>
+    <string name="create_survey">Create survey</string>
+    <string name="question_title">Title</string>
+    <string name="question_type">Question category:</string>
+    <string name="text_question_descr">Question hasn\'t points - respondents will provide text answer</string>
+    <string name="question_type_dialog_title">Question category</string>
+    <string name="add_question">Add question</string>
 
     <string-array name="eth_unit">
         <item>wei</item>
@@ -26,4 +32,14 @@
         <item>Eth</item>
     </string-array>
 
+    <string-array name="question_types_array">
+        <item>Single variant</item>
+        <item>Multi variant</item>
+        <item>Text</item>
+    </string-array>
+
+    <string-array name="question_categories">
+        <item>Target audience filter question</item>
+        <item>Survey question</item>
+    </string-array>
 </resources>

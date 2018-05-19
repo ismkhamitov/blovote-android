@@ -23,6 +23,17 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="TextAppearance.Blovote.Title" parent="TextAppearance.AppCompat.Title" />
-    <style name="TextAppearance.Blovote.Body1" parent="TextAppearance.AppCompat.Body1" />
+    <style name="TextAppearance.Blovote.Body1" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Blovote.Button.Bottom" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:minHeight">@dimen/button_bottom_min_height</item>
+        <item name="android:background">@color/colorAccentDark</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
 
 </resources>

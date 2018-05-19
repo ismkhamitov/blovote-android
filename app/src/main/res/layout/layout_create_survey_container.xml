@@ -16,6 +16,7 @@
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
@@ -27,13 +28,7 @@
         android:id="@+id/button_create"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="54dp"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:background="@color/colorAccentDark"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
         android:text="@string/create"
-        android:layout_alignParentBottom="true" />
+        style="@style/Blovote.Button.Bottom"/>
 
 </RelativeLayout>

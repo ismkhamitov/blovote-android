@@ -12,7 +12,6 @@ import io.reactivex.Observable
 import org.spongycastle.util.Strings
 import org.web3j.protocol.Web3j
 import org.web3j.tx.Contract
-import java.math.BigDecimal
 import java.math.BigInteger
 
 class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
