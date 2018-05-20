@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.DynamicArray;
 import org.web3j.abi.datatypes.DynamicBytes;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
@@ -17,6 +18,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tuples.generated.Tuple2;
+import org.web3j.tuples.generated.Tuple3;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 
@@ -34,6 +36,8 @@ public class ContractBlovote extends Contract {
 
     public static final String FUNC_UPDATESTATE = "updateState";
 
+    public static final String FUNC_GETFILTERQUESTIONSCOUNT = "getFilterQuestionsCount";
+
     public static final String FUNC_CURRENTRESPONDENTSCOUNT = "currentRespondentsCount";
 
     public static final String FUNC_RESPONDTEXT = "respondText";
@@ -41,6 +45,8 @@ public class ContractBlovote extends Contract {
     public static final String FUNC_GETSTATE = "getState";
 
     public static final String FUNC_GETQUESTIONPOINTSCOUNT = "getQuestionPointsCount";
+
+    public static final String FUNC_GETFILTERQUESTIONPOINTSCOUNT = "getFilterQuestionPointsCount";
 
     public static final String FUNC_ADDQUESTIONPOINT = "addQuestionPoint";
 
@@ -56,15 +62,23 @@ public class ContractBlovote extends Contract {
 
     public static final String FUNC_ISAVAILABLETONEWRESPONDENTS = "isAvailableToNewRespondents";
 
+    public static final String FUNC_GETFILTERQUESTIONINFO = "getFilterQuestionInfo";
+
     public static final String FUNC_RESPONDNUMBERS = "respondNumbers";
 
     public static final String FUNC_CREATIONTIMESTAMP = "creationTimestamp";
+
+    public static final String FUNC_GETFILTERQUESTIONPOINTINFO = "getFilterQuestionPointInfo";
 
     public static final String FUNC_REWARDSIZE = "rewardSize";
 
     public static final String FUNC_ADDQUESTION = "addQuestion";
 
     public static final String FUNC_GETQUESTIONSCOUNT = "getQuestionsCount";
+
+    public static final String FUNC_ADDFILTERQUESTION = "addFilterQuestion";
+
+    public static final String FUNC_ADDFILTERQUESTIONPOINT = "addFilterQuestionPoint";
 
     public static final String FUNC_GETQUESTIONPOINTINFO = "getQuestionPointInfo";
 
@@ -82,6 +96,13 @@ public class ContractBlovote extends Contract {
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint8(state)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteCall<BigInteger> getFilterQuestionsCount() {
+        final Function function = new Function(FUNC_GETFILTERQUESTIONSCOUNT, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<BigInteger> currentRespondentsCount() {
@@ -109,6 +130,13 @@ public class ContractBlovote extends Contract {
     public RemoteCall<BigInteger> getQuestionPointsCount(BigInteger qIndex) {
         final Function function = new Function(FUNC_GETQUESTIONPOINTSCOUNT, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(qIndex)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteCall<BigInteger> getFilterQuestionPointsCount(BigInteger index) {
+        final Function function = new Function(FUNC_GETFILTERQUESTIONPOINTSCOUNT, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(index)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -176,6 +204,23 @@ public class ContractBlovote extends Contract {
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
 
+    public RemoteCall<Tuple3<BigInteger, byte[], List<BigInteger>>> getFilterQuestionInfo(BigInteger index) {
+        final Function function = new Function(FUNC_GETFILTERQUESTIONINFO, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(index)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}, new TypeReference<DynamicBytes>() {}, new TypeReference<DynamicArray<Uint256>>() {}));
+        return new RemoteCall<Tuple3<BigInteger, byte[], List<BigInteger>>>(
+                new Callable<Tuple3<BigInteger, byte[], List<BigInteger>>>() {
+                    @Override
+                    public Tuple3<BigInteger, byte[], List<BigInteger>> call() throws Exception {
+                        List<Type> results = executeCallMultipleValueReturn(function);
+                        return new Tuple3<BigInteger, byte[], List<BigInteger>>(
+                                (BigInteger) results.get(0).getValue(), 
+                                (byte[]) results.get(1).getValue(), 
+                                convertToNative((List<Uint256>) results.get(2).getValue()));
+                    }
+                });
+    }
+
     public RemoteCall<TransactionReceipt> respondNumbers(List<BigInteger> numbers) {
         final Function function = new Function(
                 FUNC_RESPONDNUMBERS, 
@@ -190,6 +235,14 @@ public class ContractBlovote extends Contract {
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteCall<byte[]> getFilterQuestionPointInfo(BigInteger qIndex, BigInteger pIndex) {
+        final Function function = new Function(FUNC_GETFILTERQUESTIONPOINTINFO, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(qIndex), 
+                new org.web3j.abi.datatypes.generated.Uint256(pIndex)), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicBytes>() {}));
+        return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteCall<BigInteger> rewardSize() {
@@ -213,6 +266,25 @@ public class ContractBlovote extends Contract {
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteCall<TransactionReceipt> addFilterQuestion(BigInteger qType, byte[] qTitle) {
+        final Function function = new Function(
+                FUNC_ADDFILTERQUESTION, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint8(qType), 
+                new org.web3j.abi.datatypes.DynamicBytes(qTitle)), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteCall<TransactionReceipt> addFilterQuestionPoint(BigInteger qIndex, byte[] qText, Boolean isRight) {
+        final Function function = new Function(
+                FUNC_ADDFILTERQUESTIONPOINT, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(qIndex), 
+                new org.web3j.abi.datatypes.DynamicBytes(qText), 
+                new org.web3j.abi.datatypes.Bool(isRight)), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<byte[]> getQuestionPointInfo(BigInteger qIndex, BigInteger pointIndex) {

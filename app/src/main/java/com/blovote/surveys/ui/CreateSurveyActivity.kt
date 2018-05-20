@@ -7,21 +7,28 @@ import android.support.annotation.UiThread
 import android.support.v7.app.AlertDialog
 import android.view.MenuItem
 import com.blovote.R
+import com.blovote.app.App
 import com.blovote.app.BlovoteActivity
 import com.blovote.surveys.data.entities.QuestionCategory
+import com.blovote.surveys.domain.SurveysInteractor
 import com.blovote.surveys.presentation.SurveyCreationPresenter
 import com.blovote.surveys.ui.questions.EditQuestionFragment
 import com.blovote.surveys.ui.questions.QuestionTitleClickListener
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import javax.inject.Inject
 
 class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
 
+    @Inject
+    lateinit var surveysInteractor: SurveysInteractor
     lateinit var surveyCreationPresenter: SurveyCreationPresenter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        App.appComponent.inject(this)
+
         setupUi()
         setupUx()
         setupData()
@@ -30,7 +37,13 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> {
+                if (supportFragmentManager.backStackEntryCount > 1) {
+                    supportFragmentManager.popBackStack()
+                } else {
+                    finish()
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -38,13 +51,16 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
 
 
     override fun onQuestionTitleClick(category: QuestionCategory, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        supportFragmentManager.beginTransaction()
+                .add(android.R.id.content, EditQuestionFragment.newInstance(category, position), null)
+                .addToBackStack(null)
+                .commit()
     }
 
 
     private fun setupUi() {
         supportFragmentManager.beginTransaction()
-                .replace(android.R.id.content, CreateSurveyFragment(), null)
+                .add(android.R.id.content, CreateSurveyFragment(), null)
                 .commit()
 
         supportActionBar?.title = getString(R.string.create_survey)
@@ -53,7 +69,7 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
 
     @UiThread
     private fun setupUx() {
-        surveyCreationPresenter = SurveyCreationPresenter(ArrayList(), ArrayList())
+        surveyCreationPresenter = SurveyCreationPresenter(surveysInteractor, ArrayList(), ArrayList())
     }
 
     private fun setupData() {
@@ -72,7 +88,7 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
 
                             launch(UI) {
                                 supportFragmentManager.beginTransaction()
-                                        .replace(android.R.id.content, fragment, null)
+                                        .add(android.R.id.content, fragment, null)
                                         .addToBackStack(null)
                                         .commit()
                             }
@@ -82,8 +98,12 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
         alertDialogBuilder.create().show()
     }
 
-    fun onQuestionTitleClick() {
+    fun onQuestionAdded() {
+        supportFragmentManager.popBackStack()
+    }
 
+    fun onQuestionTitleClick() {
+        //TODO: implement
     }
 
 

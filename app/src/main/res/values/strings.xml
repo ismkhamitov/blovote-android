@@ -21,6 +21,15 @@
     <string name="text_question_descr">Question hasn\'t points - respondents will provide text answer</string>
     <string name="question_type_dialog_title">Question category</string>
     <string name="add_question">Add question</string>
+    <string name="msg_not_complete_question_title">Question should have title</string>
+    <string name="msg_not_complete_point">Point %s cannot be empty</string>
+    <string name="msg_complete_question_title">Complete the form</string>
+    <string name="ok">OK</string>
+    <string name="msg_question_no_points">Question should have at least one question</string>
+    <string name="msg_title_empty">Title cannot be empty</string>
+    <string name="msg_not_complete_respondents">Required respondents count must be positive integer number</string>
+    <string name="msg_not_complete_reward_size">Reward size must be positive integer number</string>
+    <string name="msg_survey_creation_not_complete">Complete creation form</string>
 
     <string-array name="eth_unit">
         <item>wei</item>

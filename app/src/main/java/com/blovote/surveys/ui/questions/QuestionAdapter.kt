@@ -2,6 +2,8 @@ package com.blovote.surveys.ui.questions
 
 import android.support.annotation.UiThread
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +73,15 @@ class QuestionAdapter(private val editMode : Boolean = true,
         val editText = view.findViewById<EditText>(R.id.text_point)
         editText.setText(points[position], TextView.BufferType.EDITABLE)
         setEditable(editText, editMode)
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                points[holder.adapterPosition] = p0.toString().trim()
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        })
 
         val deleteButton = view.findViewById<ImageButton>(R.id.point_delete)
         deleteButton.visibility = if (editMode) View.VISIBLE else View.GONE
@@ -103,6 +114,14 @@ class QuestionAdapter(private val editMode : Boolean = true,
         launch(UI) {
             notifyDataSetChanged()
         }
+    }
+
+    fun getPoints() : List<String> {
+        return points
+    }
+
+    fun getAnswers() : List<Int> {
+        return answs
     }
 
     fun addPoint(point: String) {

@@ -1,8 +1,10 @@
 package com.blovote.surveys.ui.questions
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.annotation.UiThread
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.blovote.R
+import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.QuestionCategory
 import com.blovote.surveys.data.entities.QuestionType
 import com.blovote.surveys.presentation.SurveyCreationPresenter
@@ -97,7 +100,7 @@ class EditQuestionFragment : Fragment() {
         }
 
         addQuestionButton.onClick {
-            //TODO: implement
+            hanleQuestionCreation()
         }
     }
 
@@ -137,6 +140,43 @@ class EditQuestionFragment : Fragment() {
         titleView.setText(question?.title ?: "", TextView.BufferType.EDITABLE)
         //TODO: порядок в енамчике и ресурсах может ебать как разъехаться
         spinnerView.setSelection((question?.type ?: QuestionType.SingleVariant).ordinal)
+    }
+
+
+    private fun hanleQuestionCreation() {
+        var isComplete = true
+        var notCompleteMessage = ""
+
+        val type = QuestionType.values()[spinnerView.selectedItemPosition]
+        val points = adapter.getPoints()
+        if (points.size == 0) {
+            isComplete = false
+            notCompleteMessage = getString(R.string.msg_question_no_points)
+        }
+        for (i in 0 until points.size) {
+            if (points[i].isEmpty()) {
+                isComplete = false
+                notCompleteMessage = String.format(getString(R.string.msg_not_complete_point), i + 1)
+            }
+        }
+
+
+        val title = titleView.text.trim()
+        if (title.isEmpty()) {
+            isComplete = false
+            notCompleteMessage = getString(R.string.msg_not_complete_question_title)
+        }
+
+        if (!isComplete && context != null) {
+            AlertDialog.Builder(context!!).setTitle(getString(R.string.msg_complete_question_title))
+                    .setMessage(notCompleteMessage)
+                    .setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.cancel()}
+                    .create().show()
+        } else {
+            val question = Question(title.toString(), type, points, adapter.getAnswers())
+            surveyCreationPresenter.onRequestQuestionAdd(category, question)
+            (activity as? CreateSurveyActivity)?.onQuestionAdded()
+        }
     }
 
 

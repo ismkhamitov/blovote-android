@@ -31,12 +31,12 @@ class SurveyCreationAdapter(questionsProvider: Observable<List<Question>>,
 
     init {
         DisposableHelper.set(disposable, questionsProvider
-                .map { newList ->
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { newList ->
                     val diff = DiffUtil.calculateDiff(QuestionsDiffUtil(currList, newList))
                     currList = newList
-                    diff}
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { diff -> diff.dispatchUpdatesTo(this)})
+                    diff.dispatchUpdatesTo(this)
+                })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -8,5 +8,4 @@ interface QuestionCreationCallback {
     fun onRequestQuestionAdd(category: QuestionCategory, question: Question)
 
     fun onRequestQuestionDelete(category: QuestionCategory, index: Int)
-
 }

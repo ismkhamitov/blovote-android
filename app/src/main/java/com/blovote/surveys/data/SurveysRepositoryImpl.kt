@@ -5,14 +5,17 @@ import android.arch.lifecycle.Observer
 import com.blovote.account.data.AccountStorage
 import com.blovote.contracts.ContractBloGodImpl
 import com.blovote.contracts.ContractBlovoteImpl
-import com.blovote.surveys.domain.SurveysRepository
+import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.data.entities.SurveyState
+import com.blovote.surveys.domain.SurveysRepository
+import io.reactivex.Completable
 import io.reactivex.Observable
 import org.spongycastle.util.Strings
 import org.web3j.protocol.Web3j
 import org.web3j.tx.Contract
 import java.math.BigInteger
+import java.nio.charset.Charset
 
 class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                             private val web3j : Web3j,
@@ -52,9 +55,50 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         return list
     }
 
+
+    override fun createSurvey(title: String,
+                        requiredRespondentsCount: Int,
+                        rewardSize: BigInteger,
+                        filterQuestions : List<Question>,
+                        mainQuestions: List<Question>): Completable {
+
+        return Completable.create {
+            try {
+                val createdAddress = contractBloGodImpl.createNewSurvey(title.toByteArray(Charset.forName("UTF-8")),
+                        BigInteger.valueOf(requiredRespondentsCount.toLong()),
+                        rewardSize).send().contractAddress
+                val surveyContract = getBlovoteContract(createdAddress)
+
+                for (i in 0 until filterQuestions.size) {
+                    val question = filterQuestions[i]
+                    surveyContract.addFilterQuestion(BigInteger.valueOf(question.type.getContractQuestionType().toLong()),
+                            question.title.toByteArray(Charset.forName("UTF-8")))
+                    for (j in 0 until question.points.size)
+                    surveyContract.addFilterQuestionPoint(BigInteger.valueOf(j.toLong()),
+                            question.points[j].toByteArray(Charset.forName("UTF-8")),
+                            question.answers.contains(j))
+                }
+
+
+                for (i in 0 until mainQuestions.size) {
+                    val question = mainQuestions[i]
+                    surveyContract.addQuestion(BigInteger.valueOf(question.type.getContractQuestionType().toLong()),
+                            question.title.toByteArray(Charset.forName("UTF-8")))
+                    for (j in 0 until question.points.size) {
+                        surveyContract.addQuestionPoint(BigInteger.valueOf(j.toLong()),
+                                question.points[j].toByteArray(Charset.forName("UTF-8")))
+                    }
+                }
+            } catch (e: Exception) {
+                it.onError(e)
+            }
+
+            it.onComplete()
+        }
+    }
+
     private fun loadBlovote(address : String, index : Int) : Survey {
-        val blovote = ContractBlovoteImpl.load(address, web3j, accountStorage.loadCredentials(),
-                gasPrice, Contract.GAS_LIMIT)
+        val blovote = getBlovoteContract(address)
         val title = Strings.fromByteArray(blovote.title().send())
         val state = SurveyState.values()[blovote.state.send().toInt()]
         val creationTime = blovote.creationTimestamp().send().toLong()
@@ -66,6 +110,11 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         return Survey(address, index, title, state, creationTime, requiredRespCnt, currentRespCnt, rewardSize, questionsCount)
     }
 
+
+    private fun getBlovoteContract(address: String) : ContractBlovoteImpl {
+        return ContractBlovoteImpl.load(address, web3j, accountStorage.loadCredentials(),
+                gasPrice, Contract.GAS_LIMIT)
+    }
 
 
     companion object {
