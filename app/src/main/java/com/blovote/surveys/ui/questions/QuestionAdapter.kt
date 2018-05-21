@@ -47,6 +47,9 @@ class QuestionAdapter(private val editMode : Boolean = true,
         radioView.visibility = if (type == QuestionType.SingleVariant) View.VISIBLE else View.GONE
         radioView.isEnabled = !editMode || hasRightAnswer
         radioView.isChecked = answs.contains(position)
+        if (radioView.isChecked) {
+            lastRadioButton = radioView
+        }
         radioView.onClick {
             checkType(QuestionType.SingleVariant)
             if (answs.size > 0) {

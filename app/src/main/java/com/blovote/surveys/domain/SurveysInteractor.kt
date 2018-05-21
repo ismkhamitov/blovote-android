@@ -14,7 +14,7 @@ interface SurveysInteractor {
                      filterQuestions: List<Question>,
                      mainQuestions: List<Question>) : Completable
 
-    fun updateSurveys() : List<Survey>
+    fun requestSurveysUpdate() : Completable
 
     fun getExistingSurveys() : List<Survey>
 

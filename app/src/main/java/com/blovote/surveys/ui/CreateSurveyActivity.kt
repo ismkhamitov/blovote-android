@@ -1,5 +1,6 @@
 package com.blovote.surveys.ui
 
+import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +10,14 @@ import android.view.MenuItem
 import com.blovote.R
 import com.blovote.app.App
 import com.blovote.app.BlovoteActivity
+import com.blovote.app.CommonProgressFragment
 import com.blovote.surveys.data.entities.QuestionCategory
 import com.blovote.surveys.domain.SurveysInteractor
 import com.blovote.surveys.presentation.SurveyCreationPresenter
 import com.blovote.surveys.ui.questions.EditQuestionFragment
 import com.blovote.surveys.ui.questions.QuestionTitleClickListener
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
@@ -23,6 +27,8 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
     @Inject
     lateinit var surveysInteractor: SurveysInteractor
     lateinit var surveyCreationPresenter: SurveyCreationPresenter
+
+    val disposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +44,7 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
-                if (supportFragmentManager.backStackEntryCount > 1) {
-                    supportFragmentManager.popBackStack()
-                } else {
+                if (!supportFragmentManager.popBackStackImmediate()) {
                     finish()
                 }
             }
@@ -57,7 +61,6 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
                 .commit()
     }
 
-
     private fun setupUi() {
         supportFragmentManager.beginTransaction()
                 .add(android.R.id.content, CreateSurveyFragment(), null)
@@ -73,10 +76,24 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
     }
 
     private fun setupData() {
-
+        disposable.add(surveyCreationPresenter.creationIsInProgressStream()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ creationIsInProgress ->
+                    if (creationIsInProgress) {
+                        supportFragmentManager.beginTransaction()
+                                .add(android.R.id.content, CommonProgressFragment.newInstance(getString(R.string.msg_progress_survey_creation)), null)
+                                .addToBackStack(TAG_CREATION_PROGRESS)
+                                .commit()
+                    } else {
+                        finish()
+                    }
+                }))
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.dispose()
+    }
 
     fun onAddQuestionClick() {
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -102,14 +119,11 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
         supportFragmentManager.popBackStack()
     }
 
-    fun onQuestionTitleClick() {
-        //TODO: implement
-    }
-
-
     companion object {
 
         private val TAG_CREATE_SURVEY = "create_survey"
+
+        private val TAG_CREATION_PROGRESS = "creation_progress"
 
         fun getStartIntent(context: Context) : Intent {
             val intent = Intent(context, CreateSurveyActivity::class.java)

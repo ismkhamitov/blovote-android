@@ -57,9 +57,9 @@ class SurveyCreationAdapter(questionsProvider: Observable<List<Question>>,
         val question = currList[position]
 
         titleView.text = question.title
-        titleView.onClick { questionClickListener.onQuestionTitleClick(questionsCategory, position) }
+        titleView.onClick { questionClickListener.onQuestionTitleClick(questionsCategory, holder.adapterPosition) }
 
-        deleteView.onClick { questionCreationCallback.onRequestQuestionDelete(questionsCategory, position) }
+        deleteView.onClick { questionCreationCallback.onRequestQuestionDelete(questionsCategory, holder.adapterPosition) }
     }
 
 

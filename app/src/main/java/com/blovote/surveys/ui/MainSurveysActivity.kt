@@ -1,7 +1,6 @@
 package com.blovote.surveys.ui
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -83,7 +82,7 @@ class MainSurveysActivity : AppCompatActivity(), NavigationView.OnNavigationItem
     private fun setupData() {
         adapter.startObservingSurveys(this)
         executorService.submit {
-            surveysInteractor.updateSurveys()
+            surveysInteractor.requestSurveysUpdate()
         }
     }
 

@@ -143,8 +143,7 @@ class CreateSurveyFragment : Fragment() {
         val rewardValue = BigInteger.valueOf(rewardSize.toLong()).multiply(BigInteger.TEN.pow(exp))
 
         if (isComplete) {
-            TODO("show progress and update after creation")
-            surveyCreationPresenter.requestQuestionCreation(title, requiredRespCnt.toInt(), rewardValue)
+            surveyCreationPresenter.requestQuestionCreation(title, requiredRespCnt.toInt(), rewardValue).subscribe()
         } else if (context != null) {
             AlertDialog.Builder(context!!)
                     .setTitle(getString(R.string.msg_survey_creation_not_complete))

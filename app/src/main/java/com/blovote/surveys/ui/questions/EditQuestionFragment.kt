@@ -1,6 +1,5 @@
 package com.blovote.surveys.ui.questions
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.annotation.UiThread
 import android.support.v4.app.Fragment
@@ -65,12 +64,24 @@ class EditQuestionFragment : Fragment() {
     private fun setupUi(view: View) {
         titleView = view.findViewById(R.id.title)
         spinnerView = view.findViewById(R.id.spinner_question_type)
+        val spinnerAdapter = ArrayAdapter<String>(context!!, android.R.layout.simple_spinner_dropdown_item,
+                this.resources.getStringArray(if (category == QuestionCategory.FilterQuestion)
+            R.array.filter_question_types_array else R.array.question_types_array))
+        spinnerView.adapter = spinnerAdapter
+
         textViewTextDescr = view.findViewById(R.id.text_view_text_description)
         addPointButton = view.findViewById(R.id.button_add_point)
         addQuestionButton = view.findViewById(R.id.add_question_button)
 
         val linearLayoutManager = LinearLayoutManager(context)
-        adapter = QuestionAdapter(true,category == QuestionCategory.FilterQuestion, type)
+        adapter = if (position == -1) {
+            QuestionAdapter(true, category == QuestionCategory.FilterQuestion, type)
+        } else {
+            val question = (if (category == QuestionCategory.FilterQuestion)
+                surveyCreationPresenter.filterQuestions() else surveyCreationPresenter.mainQuestions())[position]
+            QuestionAdapter(true, category == QuestionCategory.FilterQuestion, type,
+                    ArrayList(question.points), ArrayList(question.answers))
+        }
 
         recyclerPoints = view.findViewById(R.id.recycler_view_question_points)
         recyclerPoints.apply {
@@ -121,10 +132,10 @@ class EditQuestionFragment : Fragment() {
 
     private fun tryFillFields() {
         val question = when {
-            category == QuestionCategory.FilterQuestion && position > 0 && position < surveyCreationPresenter.filterQuestions().size -> {
+            category == QuestionCategory.FilterQuestion && position >= 0 && position < surveyCreationPresenter.filterQuestions().size -> {
                 surveyCreationPresenter.filterQuestions()[position]
             }
-            category == QuestionCategory.MainQuestion && position > 0 && position < surveyCreationPresenter.mainQuestions().size -> {
+            category == QuestionCategory.MainQuestion && position >= 0 && position < surveyCreationPresenter.mainQuestions().size -> {
                 surveyCreationPresenter.mainQuestions()[position]
             }
             else -> null
@@ -148,8 +159,8 @@ class EditQuestionFragment : Fragment() {
         var notCompleteMessage = ""
 
         val type = QuestionType.values()[spinnerView.selectedItemPosition]
-        val points = adapter.getPoints()
-        if (points.size == 0) {
+        val points = if (type == QuestionType.Text) ArrayList() else adapter.getPoints()
+        if (type != QuestionType.Text && points.isEmpty()) {
             isComplete = false
             notCompleteMessage = getString(R.string.msg_question_no_points)
         }
@@ -160,6 +171,11 @@ class EditQuestionFragment : Fragment() {
             }
         }
 
+
+        if (category == QuestionCategory.FilterQuestion && adapter.getAnswers().isEmpty()) {
+            isComplete = false
+            notCompleteMessage = getString(R.string.msg_filter_should_have_answer)
+        }
 
         val title = titleView.text.trim()
         if (title.isEmpty()) {
@@ -173,8 +189,14 @@ class EditQuestionFragment : Fragment() {
                     .setPositiveButton(getString(R.string.ok)) { dialogInterface, _ -> dialogInterface.cancel()}
                     .create().show()
         } else {
-            val question = Question(title.toString(), type, points, adapter.getAnswers())
-            surveyCreationPresenter.onRequestQuestionAdd(category, question)
+            val answers = if (type == QuestionType.Text) ArrayList() else adapter.getAnswers()
+            val question = Question(title.toString(), type, points, answers)
+            if (position == -1) {
+                surveyCreationPresenter.onRequestQuestionAdd(category, question)
+            } else {
+                surveyCreationPresenter.onRequestQuestionChange(category, question, position)
+            }
+
             (activity as? CreateSurveyActivity)?.onQuestionAdded()
         }
     }

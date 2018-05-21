@@ -21,8 +21,9 @@
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.Blovote.Title"
             android:hint="@string/hint_title"
-            android:inputType="text|textMultiLine"
+            android:inputType="text"
             android:cursorVisible="true"
+            android:focusable="true"
             android:background="@android:color/transparent" />
 
         <View

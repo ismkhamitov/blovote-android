@@ -24,7 +24,8 @@
         </activity>
 
         <activity
-            android:name=".surveys.ui.CreateSurveyActivity" />
+            android:name=".surveys.ui.CreateSurveyActivity"
+            android:windowSoftInputMode="adjustResize"/>
 
     </application>
 

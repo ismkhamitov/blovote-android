@@ -21,7 +21,11 @@
             android:textStyle="bold"
             android:hint="@string/question_title"
             android:cursorVisible="true"
-            android:background="@android:color/transparent"/>
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@android:color/transparent">
+            <requestFocus/>
+        </EditText>
 
         <View
             android:layout_height="0.5dp"

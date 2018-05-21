@@ -6,7 +6,7 @@ import org.web3j.protocol.Web3j
 import javax.inject.Named
 import javax.inject.Singleton
 
-const val GOD_ADDRESS = "0x6b47d71361fdaf6de9dd58ed3d1a68e857d87969"
+const val GOD_ADDRESS = "0x06914bd62654800d879acf940f23728132185830"
 const val NAMED_GOD_ADDRESS = "god_address"
 
 @Module

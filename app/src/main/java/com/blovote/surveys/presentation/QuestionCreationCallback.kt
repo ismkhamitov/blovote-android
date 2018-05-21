@@ -7,5 +7,7 @@ interface QuestionCreationCallback {
 
     fun onRequestQuestionAdd(category: QuestionCategory, question: Question)
 
+    fun onRequestQuestionChange(category: QuestionCategory, question: Question, position: Int)
+
     fun onRequestQuestionDelete(category: QuestionCategory, index: Int)
 }

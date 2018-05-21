@@ -60,41 +60,41 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                         requiredRespondentsCount: Int,
                         rewardSize: BigInteger,
                         filterQuestions : List<Question>,
-                        mainQuestions: List<Question>): Completable {
+                        mainQuestions: List<Question>) {
 
-        return Completable.create {
-            try {
-                val createdAddress = contractBloGodImpl.createNewSurvey(title.toByteArray(Charset.forName("UTF-8")),
-                        BigInteger.valueOf(requiredRespondentsCount.toLong()),
-                        rewardSize).send().contractAddress
-                val surveyContract = getBlovoteContract(createdAddress)
+        val createdAddress = contractBloGodImpl.createNewSurvey(title.toByteArray(Charset.forName("UTF-8")),
+                BigInteger.valueOf(requiredRespondentsCount.toLong()),
+                rewardSize).send().contractAddress
+        val surveyContract = getBlovoteContract(createdAddress)
 
-                for (i in 0 until filterQuestions.size) {
-                    val question = filterQuestions[i]
-                    surveyContract.addFilterQuestion(BigInteger.valueOf(question.type.getContractQuestionType().toLong()),
-                            question.title.toByteArray(Charset.forName("UTF-8")))
-                    for (j in 0 until question.points.size)
-                    surveyContract.addFilterQuestionPoint(BigInteger.valueOf(j.toLong()),
-                            question.points[j].toByteArray(Charset.forName("UTF-8")),
-                            question.answers.contains(j))
-                }
+        for (i in 0 until filterQuestions.size) {
+            val question = filterQuestions[i]
 
+            surveyContract.addFilterQuestion(BigInteger.valueOf(question.type.getContractQuestionType().toLong()),
+                    question.title.toByteArray(Charset.forName("UTF-8"))).send()
 
-                for (i in 0 until mainQuestions.size) {
-                    val question = mainQuestions[i]
-                    surveyContract.addQuestion(BigInteger.valueOf(question.type.getContractQuestionType().toLong()),
-                            question.title.toByteArray(Charset.forName("UTF-8")))
-                    for (j in 0 until question.points.size) {
-                        surveyContract.addQuestionPoint(BigInteger.valueOf(j.toLong()),
-                                question.points[j].toByteArray(Charset.forName("UTF-8")))
-                    }
-                }
-            } catch (e: Exception) {
-                it.onError(e)
+            for (j in 0 until question.points.size) {
+                surveyContract.addFilterQuestionPoint(BigInteger.valueOf(j.toLong()),
+                        question.points[j].toByteArray(Charset.forName("UTF-8")),
+                        question.answers.contains(j)).send()
             }
-
-            it.onComplete()
         }
+
+
+        for (i in 0 until mainQuestions.size) {
+            val question = mainQuestions[i]
+
+            surveyContract.addQuestion(BigInteger.valueOf(question.type.getContractQuestionType().toLong()),
+                    question.title.toByteArray(Charset.forName("UTF-8"))).send()
+
+            for (j in 0 until question.points.size) {
+                surveyContract.addQuestionPoint(BigInteger.valueOf(j.toLong()),
+                        question.points[j].toByteArray(Charset.forName("UTF-8"))).send()
+
+            }
+        }
+
+        surveyContract.updateState(BigInteger.valueOf(SurveyState.Active.ordinal.toLong())).send()
     }
 
     private fun loadBlovote(address : String, index : Int) : Survey {
