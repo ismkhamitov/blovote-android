@@ -1,6 +1,5 @@
 package com.blovote.surveys.ui
 
-import android.app.FragmentManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -44,7 +43,9 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
-                if (!supportFragmentManager.popBackStackImmediate()) {
+                if (supportFragmentManager.findFragmentByTag(TAG_CREATION_PROGRESS) == null
+                        && !supportFragmentManager.popBackStackImmediate()) {
+
                     finish()
                 }
             }
@@ -56,14 +57,20 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
 
     override fun onQuestionTitleClick(category: QuestionCategory, position: Int) {
         supportFragmentManager.beginTransaction()
-                .add(android.R.id.content, EditQuestionFragment.newInstance(category, position), null)
+                .replace(android.R.id.content, EditQuestionFragment.newInstance(category, position), null)
                 .addToBackStack(null)
                 .commit()
     }
 
+    override fun onBackPressed() {
+        if (supportFragmentManager.findFragmentByTag(TAG_CREATION_PROGRESS) == null) {
+            super.onBackPressed()
+        }
+    }
+
     private fun setupUi() {
         supportFragmentManager.beginTransaction()
-                .add(android.R.id.content, CreateSurveyFragment(), null)
+                .replace(android.R.id.content, CreateSurveyFragment(), null)
                 .commit()
 
         supportActionBar?.title = getString(R.string.create_survey)
@@ -79,13 +86,20 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
         disposable.add(surveyCreationPresenter.creationIsInProgressStream()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ creationIsInProgress ->
-                    if (creationIsInProgress) {
-                        supportFragmentManager.beginTransaction()
-                                .add(android.R.id.content, CommonProgressFragment.newInstance(getString(R.string.msg_progress_survey_creation)), null)
+                    when (creationIsInProgress) {
+                        SurveyCreationPresenter.CreationProgressState.Creation -> supportFragmentManager.beginTransaction()
+                                .replace(android.R.id.content, CommonProgressFragment.newInstance(getString(R.string.msg_progress_survey_creation)), TAG_CREATION_PROGRESS)
                                 .addToBackStack(TAG_CREATION_PROGRESS)
                                 .commit()
-                    } else {
-                        finish()
+                        SurveyCreationPresenter.CreationProgressState.Success -> finish()
+                        SurveyCreationPresenter.CreationProgressState.Failed -> {
+                            finish()
+                            AlertDialog.Builder(applicationContext)
+                                    .setTitle("Error")
+                                    .setMessage("Unable to create survey")
+                                    .show()
+                        }
+                        else -> { }
                     }
                 }))
     }
@@ -105,8 +119,8 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
 
                             launch(UI) {
                                 supportFragmentManager.beginTransaction()
-                                        .add(android.R.id.content, fragment, null)
-                                        .addToBackStack(null)
+                                        .replace(android.R.id.content, fragment, TAG_CREATE_SURVEY)
+                                        .addToBackStack(TAG_CREATE_SURVEY)
                                         .commit()
                             }
                         })

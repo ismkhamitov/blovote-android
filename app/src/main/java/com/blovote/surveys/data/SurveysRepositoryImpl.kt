@@ -2,6 +2,7 @@ package com.blovote.surveys.data
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
+import android.util.Base64
 import com.blovote.account.data.AccountStorage
 import com.blovote.contracts.ContractBloGodImpl
 import com.blovote.contracts.ContractBlovoteImpl
@@ -9,7 +10,6 @@ import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.data.entities.SurveyState
 import com.blovote.surveys.domain.SurveysRepository
-import io.reactivex.Completable
 import io.reactivex.Observable
 import org.spongycastle.util.Strings
 import org.web3j.protocol.Web3j
@@ -22,7 +22,7 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                             private val godContractAddress : String,
                             private val accountStorage: AccountStorage) : SurveysRepository {
 
-    private val gasPrice by lazy { web3j.ethGasPrice().send().gasPrice }
+    private val gasPrice by lazy { web3j.ethGasPrice().send().gasPrice.multiply(BigInteger.valueOf(5L)) }
     private val contractBloGodImpl by lazy { ContractBloGodImpl.load(godContractAddress, web3j, accountStorage.loadCredentials(),
             gasPrice, Contract.GAS_LIMIT) }
 
@@ -62,10 +62,13 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                         filterQuestions : List<Question>,
                         mainQuestions: List<Question>) {
 
-        val createdAddress = contractBloGodImpl.createNewSurvey(title.toByteArray(Charset.forName("UTF-8")),
+        val prevSurveysNumber = contractBloGodImpl.surveysNumber.send()
+//        Base64.encode(Base64.NO_WRAP)
+        contractBloGodImpl.createNewSurvey(title.toByteArray(Charset.forName("UTF-8")),
                 BigInteger.valueOf(requiredRespondentsCount.toLong()),
-                rewardSize).send().contractAddress
-        val surveyContract = getBlovoteContract(createdAddress)
+                rewardSize).send()
+        val currSurveysNumber = contractBloGodImpl.surveysNumber.send()
+        val surveyContract = getBlovoteContract(contractBloGodImpl.getBlovoteAddresses(prevSurveysNumber, currSurveysNumber).send()[0].toString())
 
         for (i in 0 until filterQuestions.size) {
             val question = filterQuestions[i]
@@ -74,8 +77,8 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                     question.title.toByteArray(Charset.forName("UTF-8"))).send()
 
             for (j in 0 until question.points.size) {
-                surveyContract.addFilterQuestionPoint(BigInteger.valueOf(j.toLong()),
-                        question.points[j].toByteArray(Charset.forName("UTF-8")),
+                surveyContract.addFilterQuestionPoint(BigInteger.valueOf(i.toLong()),
+                            question.points[j].toByteArray(Charset.forName("UTF-8")),
                         question.answers.contains(j)).send()
             }
         }
@@ -88,8 +91,9 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                     question.title.toByteArray(Charset.forName("UTF-8"))).send()
 
             for (j in 0 until question.points.size) {
-                surveyContract.addQuestionPoint(BigInteger.valueOf(j.toLong()),
-                        question.points[j].toByteArray(Charset.forName("UTF-8"))).send()
+                surveyContract.addQuestionPoint(BigInteger.valueOf(i.toLong()),
+                            question.points[j].toByteArray(Charset.forName("UTF-8")))
+                        .send()
 
             }
         }
@@ -99,7 +103,7 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
 
     private fun loadBlovote(address : String, index : Int) : Survey {
         val blovote = getBlovoteContract(address)
-        val title = Strings.fromByteArray(blovote.title().send())
+        val title = blovote.title().send().toString(Charset.forName("UTF-8"))
         val state = SurveyState.values()[blovote.state.send().toInt()]
         val creationTime = blovote.creationTimestamp().send().toLong()
         val requiredRespCnt = blovote.requiredRespondentsCount().send().toInt()

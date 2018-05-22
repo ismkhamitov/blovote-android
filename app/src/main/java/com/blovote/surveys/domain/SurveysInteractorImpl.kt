@@ -24,6 +24,7 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository, web3j : We
             try {
                 surveysRepository.updateSurveys()
             } catch (e : Exception) {
+                e.printStackTrace()
                 it.onError(e)
             }
 
@@ -39,6 +40,7 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository, web3j : We
             try {
                 surveysRepository.createSurvey(title, requiredRespondentsCnt, rewardSize, filterQuestions, mainQuestions)
             } catch (e: Exception) {
+                e.printStackTrace()
                 it.onError(e)
             }
             it.onComplete()

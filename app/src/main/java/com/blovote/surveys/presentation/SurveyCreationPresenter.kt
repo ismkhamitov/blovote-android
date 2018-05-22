@@ -19,7 +19,7 @@ class SurveyCreationPresenter(
     private val filterQuestionsSubject: BehaviorSubject<List<Question>> = BehaviorSubject.createDefault(filterQuestions)
     private val mainQuestionsSubject: BehaviorSubject<List<Question>> = BehaviorSubject.createDefault(mainQuestions)
 
-    private val creationSubject : BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
+    private val creationSubject : BehaviorSubject<CreationProgressState> = BehaviorSubject.createDefault(CreationProgressState.None)
 
     override fun onRequestQuestionAdd(category: QuestionCategory, question: Question) {
         val subject = if (category == QuestionCategory.FilterQuestion)
@@ -56,7 +56,7 @@ class SurveyCreationPresenter(
     }
 
 
-    fun creationIsInProgressStream() : Observable<Boolean> {
+    fun creationIsInProgressStream() : Observable<CreationProgressState> {
         return creationSubject
     }
 
@@ -65,11 +65,11 @@ class SurveyCreationPresenter(
                                          requiredRespondentsCount: Int,
                                          rewardSize: BigInteger) : Completable {
         return Completable.create({
-            creationSubject.onNext(true)
+            creationSubject.onNext(CreationProgressState.Creation)
             surveysInteractor.createSurvey(title, requiredRespondentsCount, rewardSize,
                     filterQuestions(), mainQuestions()).subscribe(object : CompletableObserver {
                 override fun onComplete() {
-                    creationSubject.onNext(false)
+                    creationSubject.onNext(CreationProgressState.Success)
                     surveysInteractor.requestSurveysUpdate()
                     it.onComplete()
                 }
@@ -78,6 +78,7 @@ class SurveyCreationPresenter(
                 }
 
                 override fun onError(e: Throwable) {
+                    creationSubject.onNext(CreationProgressState.Failed)
                     it.onError(e)
                 }
             })
@@ -100,6 +101,18 @@ class SurveyCreationPresenter(
 
     fun observeMainQuestions() : Observable<List<Question>> {
         return mainQuestionsSubject.observeOn(Schedulers.computation())
+    }
+
+
+    /********************************************** Inner class *************************/
+
+    enum class CreationProgressState {
+
+        None,
+        Creation,
+        Success,
+        Failed
+
     }
 
 }

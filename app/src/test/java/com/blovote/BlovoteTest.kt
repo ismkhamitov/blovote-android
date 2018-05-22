@@ -11,7 +11,6 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.Web3jFactory
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.Contract
-import org.web3j.tx.ManagedTransaction
 import java.math.BigInteger
 import java.nio.charset.Charset
 
@@ -57,6 +56,9 @@ class BlovoteTest {
         val surveysNumber = contractBloGod.surveysNumber.send()
         println("current surveys number : $surveysNumber")
 
+        val surveyAddress = contractBloGod.getBlovoteAddresses(BigInteger.valueOf(5L), BigInteger.valueOf(6L)).send()[0].toString()
+        val surveyContract = ContractBlovoteImpl.load(surveyAddress, web3j, credentials, gasPrice, Contract.GAS_LIMIT)
+
         val list = contractBloGod.getBlovoteAddresses(BigInteger.ZERO, surveysNumber).send()
         list.forEach { println("address: $it" ) }
     }
@@ -64,15 +66,20 @@ class BlovoteTest {
     @Test
     fun testCreateSurvey() {
 
-        var receipt = contractBloGod.createNewSurvey("First test survey".toByteArray(Charset.forName("UTF8")),
+        val prevNumber = contractBloGod.surveysNumber.send()
+        println("Current surveys number: $prevNumber")
+
+        var receipt = contractBloGod.createNewSurvey("Fifth test survey".toByteArray(Charset.forName("UTF8")),
                 BigInteger.valueOf(100), BigInteger.valueOf(100)).send()
 
         println("Survey creation gas used: ${receipt.gasUsed}")
         println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
         println("$receipt")
 
-        val surveyAddress = receipt.contractAddress
-        val surveyContract = ContractBlovoteImpl.load(surveyAddress, web3j, credentials, gasPrice, Contract.GAS_LIMIT)
+        val currNumber = contractBloGod.surveysNumber.send()
+        println("Current surveys number: $currNumber")
+        val surveyAddress = contractBloGod.getBlovoteAddresses(prevNumber, currNumber).send()[0]
+        val surveyContract = ContractBlovoteImpl.load(surveyAddress.toString(), web3j, credentials, gasPrice, Contract.GAS_LIMIT)
 
         receipt = surveyContract.addQuestion(BigInteger.valueOf(QuestionType.SingleVariant.getContractQuestionType().toLong()),
                 "Первый вопрос".toByteArray(Charset.forName("UTF-8"))).send()

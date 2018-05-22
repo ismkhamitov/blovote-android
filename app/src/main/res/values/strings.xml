@@ -30,7 +30,7 @@
     <string name="msg_not_complete_respondents">Required respondents count must be positive integer number</string>
     <string name="msg_not_complete_reward_size">Reward size must be positive integer number</string>
     <string name="msg_survey_creation_not_complete">Complete creation form</string>
-    <string name="msg_progress_survey_creation">Creating new survey...</string>
+    <string name="msg_progress_survey_creation">Creating new survey… This may take few minutes...</string>
     <string name="msg_filter_should_have_answer">Filter question should have right answer</string>
 
     <string-array name="eth_unit">

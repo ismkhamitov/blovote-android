@@ -82,7 +82,7 @@ class MainSurveysActivity : AppCompatActivity(), NavigationView.OnNavigationItem
     private fun setupData() {
         adapter.startObservingSurveys(this)
         executorService.submit {
-            surveysInteractor.requestSurveysUpdate()
+            surveysInteractor.requestSurveysUpdate().subscribe()
         }
     }
 

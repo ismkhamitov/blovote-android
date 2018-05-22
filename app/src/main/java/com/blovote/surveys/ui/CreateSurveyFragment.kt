@@ -55,6 +55,7 @@ class CreateSurveyFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         disposable.dispose()
+        disposable = CompositeDisposable()
     }
 
     private fun setupUI(view: View) {
@@ -140,9 +141,8 @@ class CreateSurveyFragment : Fragment() {
 
         val exp = rewardSizeSpinner.selectedItemPosition * 3
 
-        val rewardValue = BigInteger.valueOf(rewardSize.toLong()).multiply(BigInteger.TEN.pow(exp))
-
         if (isComplete) {
+            val rewardValue = BigInteger.valueOf(rewardSize.toLong()).multiply(BigInteger.TEN.pow(exp))
             surveyCreationPresenter.requestQuestionCreation(title, requiredRespCnt.toInt(), rewardValue).subscribe()
         } else if (context != null) {
             AlertDialog.Builder(context!!)
