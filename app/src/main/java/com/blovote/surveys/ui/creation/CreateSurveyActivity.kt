@@ -1,4 +1,4 @@
-package com.blovote.surveys.ui
+package com.blovote.surveys.ui.creation
 
 import android.content.Context
 import android.content.Intent

@@ -11,17 +11,24 @@ import android.view.Menu
 import android.view.MenuItem
 import com.blovote.app.App
 import com.blovote.R
+import com.blovote.app.BlovoteActivity
 import com.blovote.surveys.domain.SurveysInteractor
+import com.blovote.surveys.ui.creation.CreateSurveyActivity
+import com.blovote.surveys.ui.passing.SurveyActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main_surveys.*
 import kotlinx.android.synthetic.main.app_bar_main_surveys.*
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
-class MainSurveysActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var recyclerView : RecyclerView
     private lateinit var adapter : SurveysAdapter
     private lateinit var layoutManager : RecyclerView.LayoutManager
+
+    private var disposable = CompositeDisposable()
 
     @Inject
     lateinit var surveysInteractor: SurveysInteractor
@@ -59,6 +66,8 @@ class MainSurveysActivity : AppCompatActivity(), NavigationView.OnNavigationItem
 
         layoutManager = LinearLayoutManager(this)
         adapter = SurveysAdapter(surveysInteractor)
+        disposable.add(adapter.observeSurveyClick()
+                .subscribe { onSurveyClicked(it.first, it.second) })
 
         recyclerView = findViewById(R.id.recycler_view_surveys)
         recyclerView.apply {
@@ -90,6 +99,8 @@ class MainSurveysActivity : AppCompatActivity(), NavigationView.OnNavigationItem
     override fun onDestroy() {
         super.onDestroy()
         adapter.stopObservingSurveys()
+        disposable.dispose()
+        disposable = CompositeDisposable()
     }
 
     override fun onBackPressed() {
@@ -142,4 +153,10 @@ class MainSurveysActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
+    fun onSurveyClicked(address: String, index: Int) {
+        startActivity(SurveyActivity.getStartIntent(this, address, index))
+    }
+
 }

@@ -6,6 +6,8 @@ import com.blovote.surveys.data.entities.Survey
 
 interface SurveysStorage {
 
+    fun getSurvey(address: String) : Survey?
+
     fun getLastSurveyIndex(): Int
 
     fun getAllSurveys(): LiveData<List<Survey>>

@@ -30,4 +30,7 @@ interface SurveysDao {
     @Query("UPDATE surveys SET questions = :questions WHERE eth_address = :address")
     fun updateQuestions(address : String, questions : List<Question>)
 
+    @Query("SELECT * FROM surveys WHERE eth_address = :address")
+    fun getSurveyByAddress(address: String): List<Survey>
+
 }

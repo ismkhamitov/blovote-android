@@ -23,7 +23,7 @@ abstract class SurveysDatabase : RoomDatabase() {
             if (!instances.containsKey(name)) {
                 synchronized(SurveysDatabase::class) {
                     if (!instances.containsKey(name)) {
-                        instances.put(name, Room.databaseBuilder(context, SurveysDatabase::class.java, name).build())
+                        instances[name] = Room.databaseBuilder(context, SurveysDatabase::class.java, name).build()
                     }
                 }
             }

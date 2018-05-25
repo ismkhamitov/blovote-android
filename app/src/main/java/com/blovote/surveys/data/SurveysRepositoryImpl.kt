@@ -2,16 +2,14 @@ package com.blovote.surveys.data
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
-import android.util.Base64
 import com.blovote.account.data.AccountStorage
 import com.blovote.contracts.ContractBloGodImpl
 import com.blovote.contracts.ContractBlovoteImpl
-import com.blovote.surveys.data.entities.Question
-import com.blovote.surveys.data.entities.Survey
-import com.blovote.surveys.data.entities.SurveyState
+import com.blovote.surveys.data.entities.*
 import com.blovote.surveys.domain.SurveysRepository
+import io.reactivex.Completable
 import io.reactivex.Observable
-import org.spongycastle.util.Strings
+import io.reactivex.Single
 import org.web3j.protocol.Web3j
 import org.web3j.tx.Contract
 import java.math.BigInteger
@@ -38,7 +36,6 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
     }
 
     override fun updateSurveys(): List<Survey> {
-//        val creds = accountStorage.loadCredentials()
         val surveysNumder = contractBloGodImpl.surveysNumber.send()
         val lastIndex = surveysStorage.getLastSurveyIndex()
 
@@ -47,14 +44,23 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
 
         val list = mutableListOf<Survey>()
         for (i in newAddresses.indices) {
-            list.add(loadBlovote(newAddresses[i].toString(), lastIndex + 1 + i))
+            val survey = loadBlovote(newAddresses[i].toString(), lastIndex + 1 + i)
+            list.add(survey)
+            surveysStorage.saveSurvey(survey)
         }
-
-        surveysStorage.saveSurveys(list)
 
         return list
     }
 
+    override fun updateSurveyQuestionInfo(survey: Survey, category: QuestionCategory, index: Int): Single<Survey> {
+        return Single.create {
+            try {
+                it.onSuccess(loadQuestion(survey, category, index))
+            } catch (e: Exception) {
+                it.onError(e)
+            }
+        }
+    }
 
     override fun createSurvey(title: String,
                         requiredRespondentsCount: Int,
@@ -63,10 +69,9 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                         mainQuestions: List<Question>) {
 
         val prevSurveysNumber = contractBloGodImpl.surveysNumber.send()
-//        Base64.encode(Base64.NO_WRAP)
         contractBloGodImpl.createNewSurvey(title.toByteArray(Charset.forName("UTF-8")),
                 BigInteger.valueOf(requiredRespondentsCount.toLong()),
-                rewardSize).send()
+                rewardSize.multiply(BigInteger.valueOf(requiredRespondentsCount.toLong()))).send()
         val currSurveysNumber = contractBloGodImpl.surveysNumber.send()
         val surveyContract = getBlovoteContract(contractBloGodImpl.getBlovoteAddresses(prevSurveysNumber, currSurveysNumber).send()[0].toString())
 
@@ -82,7 +87,6 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                         question.answers.contains(j)).send()
             }
         }
-
 
         for (i in 0 until mainQuestions.size) {
             val question = mainQuestions[i]
@@ -101,6 +105,82 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         surveyContract.updateState(BigInteger.valueOf(SurveyState.Active.ordinal.toLong())).send()
     }
 
+
+    override fun getSurvey(address: String): Single<Survey> {
+        return Single.create {
+            val survey = surveysStorage.getSurvey(address)
+            if (survey != null) {
+                it.onSuccess(survey)
+            } else {
+                try {
+                    //TODO: test with survey external link
+                    it.onSuccess(loadBlovote(address, -1))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    it.onError(e)
+                }
+            }
+        }
+    }
+
+    override fun updateSurveyInfo(survey: Survey) : Single<Survey> {
+        return Single.create {
+            try {
+                val newSurvey = loadBlovote(survey.address, survey.index)
+                surveysStorage.saveSurvey(newSurvey)
+                it.onSuccess(newSurvey)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                it.onError(e)
+            }
+        }
+    }
+
+    override fun checkAnswer(survey: Survey, questionIndex: Int, answers: List<String>) : Single<Boolean> {
+        return Single.create({
+            try {
+                val question = survey.filterQuesions[questionIndex]
+
+                var right = answers.size == question.answers.size
+
+                if (!right) {
+                    for (answer in answers) {
+                        if (!question.answers.contains(answer.toInt())) {
+                            right = false
+                        }
+                    }
+                }
+
+                it.onSuccess(right)
+
+            } catch (e: Exception) {
+                it.onError(e)
+            }
+        })
+    }
+
+    override fun uploadAnswer(survey: Survey, questionIndex: Int, answers: List<String>): Completable {
+        return Completable.create({
+            try {
+                val blovote = getBlovoteContract(survey.address)
+                val question = survey.questions[questionIndex]
+
+                val receipt = if (question.type == QuestionType.Text) {
+                    blovote.respondText(answers[0].toByteArray(Charset.forName("UTF-8"))).send()
+                } else {
+                    blovote.respondNumbers(answers.map { it -> it.toBigInteger() }).send()
+                }
+
+                it.onComplete()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                it.onError(e)
+            }
+        })
+    }
+
+
     private fun loadBlovote(address : String, index : Int) : Survey {
         val blovote = getBlovoteContract(address)
         val title = blovote.title().send().toString(Charset.forName("UTF-8"))
@@ -109,9 +189,63 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         val requiredRespCnt = blovote.requiredRespondentsCount().send().toInt()
         val currentRespCnt = blovote.currentRespondentsCount().send().toInt()
         val rewardSize  = blovote.rewardSize().send().toString()
+        val filterQuestionsCount = blovote.filterQuestionsCount.send().toInt()
         val questionsCount = blovote.questionsCount.send().toInt()
 
-        return Survey(address, index, title, state, creationTime, requiredRespCnt, currentRespCnt, rewardSize, questionsCount)
+        val survey = Survey(address, index, title, state, creationTime, requiredRespCnt, currentRespCnt,
+                rewardSize, filterQuestionsCount, questionsCount)
+        survey.loadedTime = System.currentTimeMillis()
+
+        return survey
+    }
+
+    private fun loadQuestion(survey: Survey, category: QuestionCategory, index: Int) : Survey {
+        val blovote = getBlovoteContract(survey.address)
+
+        val type : QuestionType
+        val title : String
+        val points : MutableList<String> = ArrayList()
+        val answers : List<Int>
+        val newQuestions : MutableList<Question>
+
+        if (category == QuestionCategory.MainQuestion) {
+            val infoTuple = blovote.getQuestionInfo(BigInteger.valueOf(index.toLong())).send()
+            type = QuestionType.fromContractQuestionType(infoTuple.value1)
+            title = infoTuple.value2.toString(Charset.forName("UTF-8"))
+            answers = ArrayList()
+            newQuestions = ArrayList(survey.questions)
+
+            for (i in 0 until blovote.questionsCount.send().toInt()) {
+                points.add(blovote.getQuestionPointInfo(BigInteger.valueOf(index.toLong()),
+                        i.toBigInteger()).send().toString(Charset.forName("UTF-8")))
+            }
+
+        } else {
+            val infoTyple = blovote.getFilterQuestionInfo(BigInteger.valueOf(index.toLong())).send()
+            type = QuestionType.fromContractQuestionType(infoTyple.value1)
+            title = infoTyple.value2.toString(Charset.forName("UTF-8"))
+            answers = infoTyple.value3.map { it -> it.toInt() }
+            newQuestions = ArrayList(survey.filterQuesions)
+
+            for (i in 0 until blovote.filterQuestionsCount.send().toInt()) {
+                points.add(blovote.getFilterQuestionPointInfo(BigInteger.valueOf(index.toLong()),
+                        i.toBigInteger()).send().toString(Charset.forName("UTF-8")))
+            }
+        }
+
+        while (newQuestions.size <= index) {
+            newQuestions.add(Question())
+        }
+        newQuestions[index] = Question(title, type, points, answers)
+
+        if (category == QuestionCategory.MainQuestion) {
+            survey.questions = newQuestions
+        } else {
+            survey.filterQuesions = newQuestions
+        }
+
+        surveysStorage.saveSurvey(survey)
+        return survey
     }
 
 

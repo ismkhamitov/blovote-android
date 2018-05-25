@@ -66,72 +66,72 @@ class BlovoteTest {
     @Test
     fun testCreateSurvey() {
 
-        val prevNumber = contractBloGod.surveysNumber.send()
-        println("Current surveys number: $prevNumber")
-
-        var receipt = contractBloGod.createNewSurvey("Fifth test survey".toByteArray(Charset.forName("UTF8")),
-                BigInteger.valueOf(100), BigInteger.valueOf(100)).send()
-
-        println("Survey creation gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-        val currNumber = contractBloGod.surveysNumber.send()
-        println("Current surveys number: $currNumber")
-        val surveyAddress = contractBloGod.getBlovoteAddresses(prevNumber, currNumber).send()[0]
-        val surveyContract = ContractBlovoteImpl.load(surveyAddress.toString(), web3j, credentials, gasPrice, Contract.GAS_LIMIT)
-
-        receipt = surveyContract.addQuestion(BigInteger.valueOf(QuestionType.SingleVariant.getContractQuestionType().toLong()),
-                "Первый вопрос".toByteArray(Charset.forName("UTF-8"))).send()
-
-        println("Question gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-        receipt = surveyContract.addQuestionPoint(BigInteger.ZERO, "First point".toByteArray(Charset.forName("UTF-8"))).send()
-
-        println("Point gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-        receipt = surveyContract.addQuestionPoint(BigInteger.ZERO, ("Second megemegemgegaegeagefklfsjds;klfajdklsfjdslfjasd;fjjkffjfjfjjfjfjf  " +
-                "point").toByteArray(Charset.forName("UTF-8"))).send()
-
-        println("Second point gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-
-        receipt = surveyContract.addFilterQuestion(BigInteger.valueOf(QuestionType.SingleVariant.getContractQuestionType().toLong()),
-                "Ты реальный пацан?".toByteArray(Charset.forName("UTF-8"))).send()
-
-        println("Filter question gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-        receipt = surveyContract.addFilterQuestionPoint(BigInteger.ZERO, "Да".toByteArray(Charset.forName("UTF-8")), true).send()
-
-        println("Filter question point 1 gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-        receipt = surveyContract.addFilterQuestionPoint(BigInteger.ZERO, "Нет".toByteArray(Charset.forName("UTF-8")), false).send()
-
-        println("Filter question point 2 gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-        receipt = surveyContract.updateState(BigInteger.valueOf(SurveyState.Active.ordinal.toLong())).send()
-
-        println("Activation gas used: ${receipt.gasUsed}")
-        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
-        println("$receipt")
-
-        val surveysNumber = contractBloGod.surveysNumber.send()
-        println("New number of surveys: $surveysNumber")
-
-        val list = contractBloGod.getBlovoteAddresses(BigInteger.ZERO, surveysNumber).send()
-        list.forEach { println("address: $it" ) }
+//        val prevNumber = contractBloGod.surveysNumber.send()
+//        println("Current surveys number: $prevNumber")
+//
+//        var receipt = contractBloGod.createNewSurvey("Fifth test survey".toByteArray(Charset.forName("UTF8")),
+//                BigInteger.valueOf(100), BigInteger.valueOf(100)).send()
+//
+//        println("Survey creation gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//        val currNumber = contractBloGod.surveysNumber.send()
+//        println("Current surveys number: $currNumber")
+//        val surveyAddress = contractBloGod.getBlovoteAddresses(prevNumber, currNumber).send()[0]
+//        val surveyContract = ContractBlovoteImpl.load(surveyAddress.toString(), web3j, credentials, gasPrice, Contract.GAS_LIMIT)
+//
+//        receipt = surveyContract.addQuestion(BigInteger.valueOf(QuestionType.SingleVariant.getContractQuestionType().toLong()),
+//                "Первый вопрос".toByteArray(Charset.forName("UTF-8"))).send()
+//
+//        println("Question gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//        receipt = surveyContract.addQuestionPoint(BigInteger.ZERO, "First point".toByteArray(Charset.forName("UTF-8"))).send()
+//
+//        println("Point gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//        receipt = surveyContract.addQuestionPoint(BigInteger.ZERO, ("Second megemegemgegaegeagefklfsjds;klfajdklsfjdslfjasd;fjjkffjfjfjjfjfjf  " +
+//                "point").toByteArray(Charset.forName("UTF-8"))).send()
+//
+//        println("Second point gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//
+//        receipt = surveyContract.addFilterQuestion(BigInteger.valueOf(QuestionType.SingleVariant.getContractQuestionType().toLong()),
+//                "Ты реальный пацан?".toByteArray(Charset.forName("UTF-8"))).send()
+//
+//        println("Filter question gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//        receipt = surveyContract.addFilterQuestionPoint(BigInteger.ZERO, "Да".toByteArray(Charset.forName("UTF-8")), true).send()
+//
+//        println("Filter question point 1 gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//        receipt = surveyContract.addFilterQuestionPoint(BigInteger.ZERO, "Нет".toByteArray(Charset.forName("UTF-8")), false).send()
+//
+//        println("Filter question point 2 gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//        receipt = surveyContract.updateState(BigInteger.valueOf(SurveyState.Active.ordinal.toLong())).send()
+//
+//        println("Activation gas used: ${receipt.gasUsed}")
+//        println("Cumulative gas used: ${receipt.cumulativeGasUsed}")
+//        println("$receipt")
+//
+//        val surveysNumber = contractBloGod.surveysNumber.send()
+//        println("New number of surveys: $surveysNumber")
+//
+//        val list = contractBloGod.getBlovoteAddresses(BigInteger.ZERO, surveysNumber).send()
+//        list.forEach { println("address: $it" ) }
     }
 
     @Test

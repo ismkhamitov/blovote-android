@@ -1,6 +1,5 @@
-package com.blovote.surveys.ui
+package com.blovote.surveys.ui.creation
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment

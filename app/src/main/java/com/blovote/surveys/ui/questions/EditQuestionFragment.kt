@@ -15,7 +15,7 @@ import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.QuestionCategory
 import com.blovote.surveys.data.entities.QuestionType
 import com.blovote.surveys.presentation.SurveyCreationPresenter
-import com.blovote.surveys.ui.CreateSurveyActivity
+import com.blovote.surveys.ui.creation.CreateSurveyActivity
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class EditQuestionFragment : Fragment() {

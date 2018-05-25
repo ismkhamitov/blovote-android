@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_above="@+id/button_create"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.Blovote.Title"
+            android:focusable="true"
+            android:background="@android:color/transparent" />
+
+
+        <View
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reward_size"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
+
+            <TextView
+                android:id="@+id/text_view_reward_unit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:gravity="end"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"
+                android:textColor="@color/colorAccentDark" />
+
+
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/delimiter_questions_count"
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/questions_count"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/text_view_questions_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:visibility="gone"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"
+                android:text="5 questions" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_questions_count"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="24dp"
+                android:indeterminate="true"
+                android:layout_gravity="center_vertical"/>
+
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"/>
+
+
+        <LinearLayout
+            android:id="@+id/layout_survey_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/survey_state"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"/>
+
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/text_view_survey_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:visibility="gone"
+                android:textAppearance="@style/TextAppearance.Blovote.Body1"
+                android:text="state" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_survey_state"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="24dp"
+                android:indeterminate="true"
+                android:layout_gravity="center_vertical"/>
+
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_height="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"/>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/button_create"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_survey"
+        android:enabled="false"
+        style="@style/Blovote.Button.Bottom"/>
+
+</RelativeLayout>

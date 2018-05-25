@@ -3,8 +3,10 @@ package com.blovote.app
 import com.blovote.account.di.AccountInfoModule
 import com.blovote.contracts.di.ContractsModule
 import com.blovote.surveys.di.SurveysModule
-import com.blovote.surveys.ui.CreateSurveyActivity
+import com.blovote.surveys.ui.creation.CreateSurveyActivity
 import com.blovote.surveys.ui.MainSurveysActivity
+import com.blovote.surveys.ui.passing.SurveyActivity
+import com.blovote.surveys.ui.passing.SurveyDetailsFragment
 import com.blovote.web3.di.Web3Module
 import dagger.Component
 import javax.inject.Singleton
@@ -23,5 +25,9 @@ interface AppComponent {
     fun inject(mainSurveysActivity: MainSurveysActivity)
 
     fun inject(mainSurveysActivity: CreateSurveyActivity)
+    
+    fun inject(surveyActivity: SurveyActivity)
+
+    fun inject(surveyDetailsFragment: SurveyDetailsFragment)
 
 }
