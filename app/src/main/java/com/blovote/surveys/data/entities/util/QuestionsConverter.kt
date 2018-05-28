@@ -12,6 +12,7 @@ import java.util.LinkedList
 const val TITLE_KEY = "title"
 const val TYPE_KEY = "type"
 const val POINTS_KEY = "points"
+const val ANSWERS_KEY = "answers"
 
 class QuestionsConverter {
 
@@ -20,14 +21,15 @@ class QuestionsConverter {
         val questionsArray = JSONArray()
         for (question in questions) {
             val pointsArray = JSONArray()
-            for (point in question.points) {
-                pointsArray.put(point)
-            }
+            question.points.forEach { pointsArray.put(it) }
+            val answersArray = JSONArray()
+            question.answers.forEach { answersArray.put(it) }
 
             val questionObj = JSONObject()
             questionObj.put(TITLE_KEY, question.title)
             questionObj.put(TYPE_KEY, question.type.ordinal)
             questionObj.put(POINTS_KEY, pointsArray)
+            questionObj.put(ANSWERS_KEY, answersArray)
 
             questionsArray.put(questionObj)
         }
@@ -43,10 +45,16 @@ class QuestionsConverter {
         for (i in 0 until questionsArray.length()) {
             val questionJson = questionsArray.getJSONObject(i)
             val pointsJson = questionJson.getJSONArray(POINTS_KEY)
+            val answersJson = questionJson.getJSONArray(ANSWERS_KEY)
 
             val points = LinkedList<String>()
             for (j in 0 until pointsJson.length()) {
                 points.add(pointsJson.getString(j))
+            }
+
+            val answers = LinkedList<Int>()
+            for (j in 0 until answersJson.length()) {
+                answers.add(answersJson.getInt(i))
             }
 
             val title = questionJson.getString(TITLE_KEY)
@@ -57,7 +65,7 @@ class QuestionsConverter {
             }
             val type = QuestionType.values()[typeIndex]
 
-            questions.add(Question(title, type, points))
+            questions.add(Question(title, type, points, answers))
         }
 
         return questions

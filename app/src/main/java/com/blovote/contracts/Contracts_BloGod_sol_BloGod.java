@@ -27,7 +27,7 @@ import org.web3j.tx.TransactionManager;
  *
  * <p>Generated with web3j version 3.4.0.
  */
-public class ContractBloGod extends Contract {
+public class Contracts_BloGod_sol_BloGod extends Contract {
     private static final String BINARY = "";
 
     public static final String FUNC_CREATENEWSURVEY = "createNewSurvey";
@@ -36,11 +36,11 @@ public class ContractBloGod extends Contract {
 
     public static final String FUNC_GETSURVEYSNUMBER = "getSurveysNumber";
 
-    protected ContractBloGod(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    protected Contracts_BloGod_sol_BloGod(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    protected ContractBloGod(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    protected Contracts_BloGod_sol_BloGod(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
@@ -76,19 +76,19 @@ public class ContractBloGod extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public static RemoteCall<ContractBloGod> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(ContractBloGod.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<Contracts_BloGod_sol_BloGod> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(Contracts_BloGod_sol_BloGod.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
     }
 
-    public static RemoteCall<ContractBloGod> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(ContractBloGod.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<Contracts_BloGod_sol_BloGod> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(Contracts_BloGod_sol_BloGod.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
     }
 
-    public static ContractBloGod load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return new ContractBloGod(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    public static Contracts_BloGod_sol_BloGod load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return new Contracts_BloGod_sol_BloGod(contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    public static ContractBloGod load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return new ContractBloGod(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+    public static Contracts_BloGod_sol_BloGod load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return new Contracts_BloGod_sol_BloGod(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 }

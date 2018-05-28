@@ -3,8 +3,8 @@ package com.blovote.surveys.data
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import com.blovote.account.data.AccountStorage
-import com.blovote.contracts.ContractBloGodImpl
-import com.blovote.contracts.ContractBlovoteImpl
+import com.blovote.contracts.Contracts_BloGodImpl_sol_BloGodImpl
+import com.blovote.contracts.Contracts_BlovoteImpl_sol_BlovoteImpl
 import com.blovote.surveys.data.entities.*
 import com.blovote.surveys.domain.SurveysRepository
 import io.reactivex.Completable
@@ -21,8 +21,9 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                             private val accountStorage: AccountStorage) : SurveysRepository {
 
     private val gasPrice by lazy { web3j.ethGasPrice().send().gasPrice.multiply(BigInteger.valueOf(5L)) }
-    private val contractBloGodImpl by lazy { ContractBloGodImpl.load(godContractAddress, web3j, accountStorage.loadCredentials(),
-            gasPrice, Contract.GAS_LIMIT) }
+
+    private val contractBloGodImpl by lazy { Contracts_BloGodImpl_sol_BloGodImpl.load(
+            godContractAddress, web3j, accountStorage.loadCredentials(), gasPrice, Contract.GAS_LIMIT) }
 
     override fun getAllSurveys(): List<Survey> {
         return surveysStorage.getAllSurveys().value ?: listOf()
@@ -140,16 +141,9 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         return Single.create({
             try {
                 val question = survey.filterQuesions[questionIndex]
-
-                var right = answers.size == question.answers.size
-
-                if (!right) {
-                    for (answer in answers) {
-                        if (!question.answers.contains(answer.toInt())) {
-                            right = false
-                        }
-                    }
-                }
+                val rightAnswers = question.answers.map { it.toString() }
+                val right = answers.size == rightAnswers.size &&
+                        answers.all { rightAnswers.contains(it) }
 
                 it.onSuccess(right)
 
@@ -182,6 +176,8 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
 
 
     private fun loadBlovote(address : String, index : Int) : Survey {
+        val prevSurvey = surveysStorage.getSurvey(address)
+
         val blovote = getBlovoteContract(address)
         val title = blovote.title().send().toString(Charset.forName("UTF-8"))
         val state = SurveyState.values()[blovote.state.send().toInt()]
@@ -194,6 +190,10 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
 
         val survey = Survey(address, index, title, state, creationTime, requiredRespCnt, currentRespCnt,
                 rewardSize, filterQuestionsCount, questionsCount)
+        if (prevSurvey != null) {
+            survey.filterQuesions = prevSurvey.filterQuesions
+            survey.questions = prevSurvey.questions
+        }
         survey.loadedTime = System.currentTimeMillis()
 
         return survey
@@ -215,7 +215,8 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
             answers = ArrayList()
             newQuestions = ArrayList(survey.questions)
 
-            for (i in 0 until blovote.questionsCount.send().toInt()) {
+            val pointsCount = blovote.getQuestionPointsCount(index.toBigInteger()).send().toInt()
+            for (i in 0 until pointsCount) {
                 points.add(blovote.getQuestionPointInfo(BigInteger.valueOf(index.toLong()),
                         i.toBigInteger()).send().toString(Charset.forName("UTF-8")))
             }
@@ -227,7 +228,8 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
             answers = infoTyple.value3.map { it -> it.toInt() }
             newQuestions = ArrayList(survey.filterQuesions)
 
-            for (i in 0 until blovote.filterQuestionsCount.send().toInt()) {
+            val pointsCount = blovote.getFilterQuestionPointsCount(index.toBigInteger()).send().toInt()
+            for (i in 0 until pointsCount) {
                 points.add(blovote.getFilterQuestionPointInfo(BigInteger.valueOf(index.toLong()),
                         i.toBigInteger()).send().toString(Charset.forName("UTF-8")))
             }
@@ -249,14 +251,9 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
     }
 
 
-    private fun getBlovoteContract(address: String) : ContractBlovoteImpl {
-        return ContractBlovoteImpl.load(address, web3j, accountStorage.loadCredentials(),
+    private fun getBlovoteContract(address: String) : Contracts_BlovoteImpl_sol_BlovoteImpl {
+        return Contracts_BlovoteImpl_sol_BlovoteImpl.load(address, web3j, accountStorage.loadCredentials(),
                 gasPrice, Contract.GAS_LIMIT)
-    }
-
-
-    companion object {
-        private val REWARD_DIV_EXP = 12
     }
 
 }

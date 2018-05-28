@@ -2,6 +2,7 @@ package com.blovote.surveys.ui.passing
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -70,6 +71,10 @@ class QuestionPassFragment : Fragment() {
     }
 
     private fun onNextClick() {
+        if (context == null) {
+            return
+        }
+
         val passListener = activity as? QuestionPassListener
         if (passListener != null) {
             val answers = if (question.type == QuestionType.Text) {
@@ -81,7 +86,13 @@ class QuestionPassFragment : Fragment() {
                 questionsAdapter.getAnswers().map { it.toString() }.toList()
             }
 
-            passListener.onQuestionAnswer(category, index, answers)
+            if (answers.isEmpty()) {
+                AlertDialog.Builder(context!!)
+                        .setMessage(getString(R.string.msg_provide_answer))
+                        .show()
+            } else {
+                passListener.onQuestionAnswer(category, index, answers)
+            }
         }
     }
 

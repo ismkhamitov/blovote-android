@@ -30,7 +30,7 @@
     <string name="msg_not_complete_respondents">Required respondents count must be positive integer number</string>
     <string name="msg_not_complete_reward_size">Reward size must be positive integer number</string>
     <string name="msg_survey_creation_not_complete">Complete creation form</string>
-    <string name="msg_progress_survey_creation">Creating new survey… This may take few minutes…</string>
+    <string name="msg_progress_survey_creation">Creating new survey…\nThis may take few minutes…</string>
     <string name="msg_filter_should_have_answer">Filter question should have right answer</string>
     <string name="state_name_new">New</string>
     <string name="state_new_active">Active</string>
@@ -47,6 +47,9 @@
     <string name="msg_uploading_answer">Uploading answer…</string>
     <string name="msg_incorrect_answer">Incorrect answer</string>
     <string name="msg_error_uploading">Error occurred: %s</string>
+    <string name="update">Update</string>
+    <string name="msg_loading_surveys">Loading surveys…</string>
+    <string name="msg_provide_answer">Answer should be provided</string>
 
     <string-array name="eth_unit">
         <item>wei</item>

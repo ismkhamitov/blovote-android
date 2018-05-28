@@ -1,7 +1,7 @@
 package com.blovote.test
 
-import com.blovote.contracts.ContractBloGodImpl
-import com.blovote.contracts.ContractBlovoteImpl
+import com.blovote.contracts.Contracts_BloGodImpl_sol_BloGodImpl
+import com.blovote.contracts.Contracts_BlovoteImpl_sol_BlovoteImpl
 import com.blovote.surveys.data.entities.QuestionType
 import com.blovote.surveys.data.entities.SurveyState
 import org.junit.Test
@@ -11,6 +11,7 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.Web3jFactory
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.Contract
+import org.web3j.tx.ManagedTransaction
 import java.math.BigInteger
 import java.nio.charset.Charset
 
@@ -27,40 +28,41 @@ class BlovoteTest {
     val web3j : Web3j by lazy { Web3jFactory.build(HttpService(NODE_ADDRESS)) }
     val credentials : Credentials by lazy { WalletUtils.loadCredentials(PASSWORD, MAIN_WALLET_FILE) }
 
-    val godAddress : String = "0x06914bd62654800d879acf940f23728132185830"
+    val godAddress : String = "0xe13db7b7d95afc0964940b6a4f03db2e51161386"
 
     val gasPrice by lazy { web3j.ethGasPrice().send().gasPrice }
-    val contractBloGod by lazy { ContractBloGodImpl.load(godAddress, web3j, credentials,
-            gasPrice, Contract.GAS_LIMIT) }
+    val contractBloGod by lazy { Contracts_BloGodImpl_sol_BloGodImpl.load(
+            godAddress, web3j, credentials, gasPrice, Contract.GAS_LIMIT) }
 
     //@Deprecated("DO NOT RUN THIS TEST, CONTRACT DEPLOYED AT ADDRESS: 0x6b47d71361fdaf6de9dd58ed3d1a68e857d87969")
     @Test
     fun testDeployGod() {
 
-//        println("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
-//
-//
-//        println("Deploying smart-contract")
-//
-//        val contractGod : ContractBloGodImpl = ContractBloGodImpl.deploy(web3j, credentials,
-//                ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
-//
-//        print("Smart contract deployed to address: ${contractGod.contractAddress}")
+        println("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
+
+
+        println("Deploying smart-contract")
+
+        val contractGod : Contracts_BloGodImpl_sol_BloGodImpl = Contracts_BloGodImpl_sol_BloGodImpl
+                .deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
+
+        print("Smart contract deployed to address: ${contractGod.contractAddress}")
     }
 
     @Test
     fun testDeployedGod() {
 
-        println("current gas price: $gasPrice")
-
-        val surveysNumber = contractBloGod.surveysNumber.send()
-        println("current surveys number : $surveysNumber")
-
-        val surveyAddress = contractBloGod.getBlovoteAddresses(BigInteger.valueOf(5L), BigInteger.valueOf(6L)).send()[0].toString()
-        val surveyContract = ContractBlovoteImpl.load(surveyAddress, web3j, credentials, gasPrice, Contract.GAS_LIMIT)
-
-        val list = contractBloGod.getBlovoteAddresses(BigInteger.ZERO, surveysNumber).send()
-        list.forEach { println("address: $it" ) }
+//        println("current gas price: $gasPrice")
+//
+//        val surveysNumber = contractBloGod.surveysNumber.send()
+//        println("current surveys number : $surveysNumber")
+//
+//        val surveyAddress = contractBloGod.getBlovoteAddresses(BigInteger.valueOf(5L), BigInteger.valueOf(6L)).send()[0].toString()
+//        val surveyContract = Contracts_BlovoteImpl_sol_BlovoteImpl.load(surveyAddress,
+//                web3j, credentials, gasPrice, Contract.GAS_LIMIT)
+//
+//        val list = contractBloGod.getBlovoteAddresses(BigInteger.ZERO, surveysNumber).send()
+//        list.forEach { println("address: $it" ) }
     }
 
     @Test

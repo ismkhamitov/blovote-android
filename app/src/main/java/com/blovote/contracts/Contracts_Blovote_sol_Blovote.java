@@ -31,7 +31,7 @@ import org.web3j.tx.TransactionManager;
  *
  * <p>Generated with web3j version 3.4.0.
  */
-public class ContractBlovote extends Contract {
+public class Contracts_Blovote_sol_Blovote extends Contract {
     private static final String BINARY = "";
 
     public static final String FUNC_UPDATESTATE = "updateState";
@@ -82,11 +82,11 @@ public class ContractBlovote extends Contract {
 
     public static final String FUNC_GETQUESTIONPOINTINFO = "getQuestionPointInfo";
 
-    protected ContractBlovote(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    protected Contracts_Blovote_sol_Blovote(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    protected ContractBlovote(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    protected Contracts_Blovote_sol_Blovote(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
@@ -295,19 +295,19 @@ public class ContractBlovote extends Contract {
         return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
-    public static RemoteCall<ContractBlovote> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(ContractBlovote.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<Contracts_Blovote_sol_Blovote> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(Contracts_Blovote_sol_Blovote.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
     }
 
-    public static RemoteCall<ContractBlovote> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(ContractBlovote.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<Contracts_Blovote_sol_Blovote> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(Contracts_Blovote_sol_Blovote.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
     }
 
-    public static ContractBlovote load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return new ContractBlovote(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    public static Contracts_Blovote_sol_Blovote load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return new Contracts_Blovote_sol_Blovote(contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    public static ContractBlovote load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return new ContractBlovote(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+    public static Contracts_Blovote_sol_Blovote load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return new Contracts_Blovote_sol_Blovote(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 }

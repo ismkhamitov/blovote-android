@@ -51,7 +51,7 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository, web3j : We
             }
 
             it.onComplete()
-        })
+        }).subscribeOn(Schedulers.computation())
     }
 
     override fun createSurvey(title: String, requiredRespondentsCnt: Int,
