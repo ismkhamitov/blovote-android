@@ -44,12 +44,16 @@ class SurveyDetailsFragment : Fragment() {
         val view = inflater.inflate(R.layout.layout_survey_details, container, false)
         App.appComponent.inject(this)
         setupUI(view)
-        setupUX()
         return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStart() {
+        super.onStart()
+        setupUX()
+    }
+
+    override fun onStop() {
+        super.onStop()
         disposable.dispose()
         disposable = CompositeDisposable()
     }
@@ -91,7 +95,7 @@ class SurveyDetailsFragment : Fragment() {
     }
 
     private fun onSurveyLoaded(survey: Survey?) {
-        if (survey == null) {
+        if (survey == null || context == null) {
             return
         }
 
