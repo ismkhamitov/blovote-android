@@ -35,6 +35,6 @@ fun BigInteger.toReadableString() : String {
             }
         }
 
-        return String.format("%1s,.3f %s", value, unit)
+        return String.format("%.3f %s", value, unit)
     }
 }
