@@ -2,26 +2,24 @@ package com.blovote.surveys.ui
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.blovote.app.App
 import com.blovote.R
+import com.blovote.app.App
 import com.blovote.app.BlovoteActivity
 import com.blovote.surveys.domain.SurveysInteractor
 import com.blovote.surveys.ui.creation.CreateSurveyActivity
 import com.blovote.surveys.ui.passing.SurveyActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
+import com.blovote.wallet.ui.WalletControlFragment
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main_surveys.*
 import kotlinx.android.synthetic.main.app_bar_main_surveys.*
-import java.util.concurrent.ExecutorService
+import kotlinx.android.synthetic.main.content_main_surveys.*
 import javax.inject.Inject
 
 class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -34,9 +32,6 @@ class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSe
 
     @Inject
     lateinit var surveysInteractor: SurveysInteractor
-
-    @Inject
-    lateinit var executorService: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +48,6 @@ class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSe
     private fun setupUx() {
         fab.setOnClickListener { view ->
             startActivity(CreateSurveyActivity.getStartIntent(this))
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -136,8 +129,13 @@ class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSe
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
+            R.id.nav_wallet -> {
+                if (supportFragmentManager.findFragmentByTag(TAG_WALLET_FRAGMENT) == null) {
+                    supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_content, WalletControlFragment.newInstance(), TAG_WALLET_FRAGMENT)
+                            .addToBackStack(null)
+                            .commit()
+                }
             }
             R.id.nav_gallery -> {
 
@@ -163,6 +161,13 @@ class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSe
 
     fun onSurveyClicked(address: String, index: Int) {
         startActivity(SurveyActivity.getStartIntent(this, address, index))
+    }
+
+
+    companion object {
+
+        private val TAG_WALLET_FRAGMENT = "wallet_fragment"
+
     }
 
 }

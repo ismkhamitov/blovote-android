@@ -1,5 +1,6 @@
 package com.blovote.surveys.ui
 
+import java.math.BigDecimal
 import java.math.BigInteger
 
 fun BigInteger.toReadableString() : String {
@@ -35,6 +36,11 @@ fun BigInteger.toReadableString() : String {
             }
         }
 
-        return String.format("%.3f %s", value, unit)
+        return String.format("%,3f %s", value, unit)
     }
+}
+
+fun BigInteger.toEtherString() : String {
+    val etherValue = BigDecimal(this)
+    return etherValue.divide(BigDecimal.TEN.pow(18)).toString() + " Eth"
 }

@@ -50,6 +50,13 @@
     <string name="update">Update</string>
     <string name="msg_loading_surveys">Loading surveys…</string>
     <string name="msg_provide_answer">Answer should be provided</string>
+    <string name="menu_title_wallet">My Wallet</string>
+    <string name="title_balance">Current balance:</string>
+    <string name="title_send_ether">Send Ether:</string>
+    <string name="send">Send</string>
+    <string name="recipient_address">Recipient address</string>
+    <string name="message_ether_sent">Ether was successfully sent!</string>
+    <string name="message_ether_sending_error">Error occured sending Ether!</string>
 
     <string-array name="eth_unit">
         <item>wei</item>

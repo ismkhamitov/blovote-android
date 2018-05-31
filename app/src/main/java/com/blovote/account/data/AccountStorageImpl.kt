@@ -2,9 +2,12 @@ package com.blovote.account.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import io.reactivex.Single
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
+import org.web3j.protocol.core.DefaultBlockParameterName
 import java.io.File
+import java.math.BigInteger
 
 class AccountStorageImpl(val context : Context) : AccountStorage {
 
@@ -49,6 +52,7 @@ class AccountStorageImpl(val context : Context) : AccountStorage {
 
         return true
     }
+
 
     private fun updatePrefs(password: String, filename: String) {
         prefs.edit()

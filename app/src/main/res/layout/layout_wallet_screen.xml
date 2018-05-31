@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="@style/TextAppearance.Blovote.Title"
+            android:textStyle="bold"
+            android:text="@string/title_balance"/>
+
+
+        <TextView
+            android:id="@+id/text_view_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textIsSelectable="true"
+            android:textAppearance="@style/TextAppearance.Blovote.Body1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:textAppearance="@style/TextAppearance.Blovote.Title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:text="@string/title_send_ether"/>
+
+
+        <EditText
+            android:id="@+id/text_view_recipient_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorAccentDark"
+            android:hint="@string/recipient_address"
+            android:layout_marginTop="16dp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+
+            <EditText
+                android:id="@+id/edit_text_transfer_size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/ten"
+                android:inputType="number"
+                android:backgroundTint="@color/colorAccentDark"
+                android:maxLength="9"
+                android:layout_weight="1"
+                android:gravity="end" />
+
+            <Spinner
+                android:id="@+id/spinner_ether_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/eth_unit"/>
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/send"
+            style="@style/Widget.Blovote.Button.Colored"
+            android:layout_gravity="end"/>
+
+
+        <ProgressBar
+            android:id="@+id/progress_bar_sending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="end"
+            android:indeterminate="false"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+
+    </LinearLayout>
+
+
+
+</ScrollView>
