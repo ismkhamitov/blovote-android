@@ -10,6 +10,7 @@ const val COL_ETH_ADDRESS = "eth_address"
 @Entity(tableName = "surveys")
 data class Survey(@PrimaryKey @ColumnInfo(name = COL_ETH_ADDRESS) var address: String = "",
                   @ColumnInfo(name = "index") var index : Int = 0,
+                  @ColumnInfo(name = "creator") var creator : String = "",
                   @ColumnInfo(name = "title") var title: String = "",
                   @ColumnInfo(name = "state") var state: SurveyState = SurveyState.New,
                   @ColumnInfo(name = "creation_time") var timestamp: Long = 0,

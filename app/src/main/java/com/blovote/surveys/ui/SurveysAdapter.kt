@@ -30,8 +30,8 @@ class SurveysAdapter(val surveysInteractor: SurveysInteractor) : RecyclerView.Ad
 
     private var surveysList : List<Survey> = ArrayList()
 
-    fun startObservingSurveys(lifecycleOwner: LifecycleOwner) {
-        DisposableHelper.set(disposableRef, surveysInteractor.observeExistingSurveys(lifecycleOwner)
+    fun startObservingSurveys(surveysObservable: Observable<List<Survey>>) {
+        DisposableHelper.set(disposableRef, surveysObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ newSurveysList ->
                     val diff = DiffUtil.calculateDiff(SurveysDiffUtil(surveysList, newSurveysList))

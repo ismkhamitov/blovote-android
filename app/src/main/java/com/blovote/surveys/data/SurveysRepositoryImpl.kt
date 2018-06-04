@@ -30,9 +30,16 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
     }
 
     override fun observeAllSurveys(lifecycleOwner: LifecycleOwner) : Observable<List<Survey>> {
-        return Observable.create<List<Survey>> {it ->
+        return Observable.create<List<Survey>> {
             surveysStorage.getAllSurveys().observe(lifecycleOwner,
                     Observer<List<Survey>> { t -> it.onNext(t!!) })
+        }
+    }
+
+    override fun observeCreatorsQuestions(lifecycleOwner: LifecycleOwner, address: String): Observable<List<Survey>> {
+        return Observable.create<List<Survey>> {
+            surveysStorage.getCreatorsSurveys(address)
+                    .observe(lifecycleOwner, Observer<List<Survey>> { t -> it.onNext(t!!) })
         }
     }
 
@@ -180,6 +187,12 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
 
         val blovote = getBlovoteContract(address)
         val title = blovote.title().send().toString(Charset.forName("UTF-8"))
+
+        // creator field was added later and may not be presented at old surveys
+        val creator = try {
+            blovote.creator().send()
+        } catch (e: Exception) { "" }
+
         val state = SurveyState.values()[blovote.state.send().toInt()]
         val creationTime = blovote.creationTimestamp().send().toLong()
         val requiredRespCnt = blovote.requiredRespondentsCount().send().toInt()
@@ -188,7 +201,7 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         val filterQuestionsCount = blovote.filterQuestionsCount.send().toInt()
         val questionsCount = blovote.questionsCount.send().toInt()
 
-        val survey = Survey(address, index, title, state, creationTime, requiredRespCnt, currentRespCnt,
+        val survey = Survey(address, index, creator, title, state, creationTime, requiredRespCnt, currentRespCnt,
                 rewardSize, filterQuestionsCount, questionsCount)
         if (prevSurvey != null) {
             survey.filterQuesions = prevSurvey.filterQuesions

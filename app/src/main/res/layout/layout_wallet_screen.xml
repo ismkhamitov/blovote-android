@@ -17,6 +17,23 @@
             android:layout_height="match_parent"
             android:textAppearance="@style/TextAppearance.Blovote.Title"
             android:textStyle="bold"
+            android:text="@string/your_address"/>
+
+
+        <TextView
+            android:id="@+id/text_view_your_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textIsSelectable="true"
+            android:textAppearance="@style/TextAppearance.Blovote.Body1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:textAppearance="@style/TextAppearance.Blovote.Title"
+            android:textStyle="bold"
             android:text="@string/title_balance"/>
 
 

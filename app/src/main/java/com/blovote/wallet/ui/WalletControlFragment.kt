@@ -55,7 +55,10 @@ class WalletControlFragment : Fragment() {
 
     private fun setupUi() {
         val view = this.view ?: return
+        val viewAddress = view.findViewById<TextView>(R.id.text_view_your_address)
         val viewBalance = view.findViewById<TextView>(R.id.text_view_balance)
+
+        viewAddress.text = accountInteractor.getAddress()
 
         disposable.add(accountInteractor.getBalance()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -87,7 +90,7 @@ class WalletControlFragment : Fragment() {
             if (size > 0L) {
                 val exp = 18 - spinnerUnit.selectedItemPosition * 3
 
-                val actualSize = BigDecimal(size).multiply(BigDecimal.TEN.pow(exp))
+                val actualSize = BigDecimal(size).divide(BigDecimal.TEN.pow(exp))
                 AlertDialog.Builder(this@WalletControlFragment.context)
                         .setMessage(String.format("Send %s Eth to address %s?", actualSize, targetAddress))
                         .setPositiveButton("Yes", { _, _ -> onSendEther(targetAddress.toString(), actualSize) })

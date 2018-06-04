@@ -40,7 +40,7 @@ class SurveysModule {
 
     @Provides
     @Singleton
-    fun provideSurveysInteractor(repository: SurveysRepository, web3j: Web3j) : SurveysInteractor {
-        return SurveysInteractorImpl(repository, web3j)
+    fun provideSurveysInteractor(repository: SurveysRepository, accountStorage: AccountStorage) : SurveysInteractor {
+        return SurveysInteractorImpl(repository, accountStorage)
     }
 }

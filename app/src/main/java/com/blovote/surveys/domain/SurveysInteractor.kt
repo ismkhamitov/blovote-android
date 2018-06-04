@@ -24,6 +24,8 @@ interface SurveysInteractor {
 
     fun observeExistingSurveys(lifecycleOwner: LifecycleOwner): Observable<List<Survey>>
 
+    fun observeMySurveys(lifecycleOwner: LifecycleOwner) : Observable<List<Survey>>
+
     fun updateSurveyInfo(survey: Survey): Single<Survey>
 
     fun updateSurveyQuestionInfo(survey: Survey, category: QuestionCategory, index: Int) : Single<Survey>

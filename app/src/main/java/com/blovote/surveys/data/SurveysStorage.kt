@@ -12,6 +12,8 @@ interface SurveysStorage {
 
     fun getAllSurveys(): LiveData<List<Survey>>
 
+    fun getCreatorsSurveys(address: String) : LiveData<List<Survey>>
+
     fun saveSurvey(survey: Survey)
 
     fun saveSurveys(surveys: List<Survey>)

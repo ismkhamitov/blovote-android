@@ -8,6 +8,9 @@ import java.math.BigInteger
 
 interface AccountInteractor {
 
+
+    fun getAddress() : String
+
     fun getBalance() : Single<BigInteger>
 
 

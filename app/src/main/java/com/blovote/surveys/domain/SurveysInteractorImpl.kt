@@ -1,6 +1,7 @@
 package com.blovote.surveys.domain
 
 import android.arch.lifecycle.LifecycleOwner
+import com.blovote.account.data.AccountStorage
 import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.QuestionCategory
 import com.blovote.surveys.data.entities.Survey
@@ -11,7 +12,8 @@ import io.reactivex.schedulers.Schedulers
 import org.web3j.protocol.Web3j
 import java.math.BigInteger
 
-class SurveysInteractorImpl(val surveysRepository: SurveysRepository, web3j : Web3j) : SurveysInteractor {
+class SurveysInteractorImpl(val surveysRepository: SurveysRepository,
+                            val accountStorage: AccountStorage) : SurveysInteractor {
 
     override fun getSurvey(address: String): Single<Survey> {
         return surveysRepository.getSurvey(address).subscribeOn(Schedulers.computation())
@@ -23,6 +25,10 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository, web3j : We
 
     override fun observeExistingSurveys(lifecycleOwner: LifecycleOwner): Observable<List<Survey>> {
         return surveysRepository.observeAllSurveys(lifecycleOwner)
+    }
+
+    override fun observeMySurveys(lifecycleOwner: LifecycleOwner): Observable<List<Survey>> {
+        return surveysRepository.observeCreatorsQuestions(lifecycleOwner, accountStorage.loadCredentials().address)
     }
 
     override fun updateSurveyInfo(survey: Survey): Single<Survey> {

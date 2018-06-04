@@ -27,6 +27,10 @@ class SurveysStorageImpl(storage: SurveysDatabase) : SurveysStorage {
         return surveysDao.getAllSurveys()
     }
 
+    override fun getCreatorsSurveys(address: String): LiveData<List<Survey>> {
+        return surveysDao.getCreatorsSurveys(address)
+    }
+
 
 
     override fun saveSurvey(survey: Survey) {

@@ -57,6 +57,10 @@
     <string name="recipient_address">Recipient address</string>
     <string name="message_ether_sent">Ether was successfully sent!</string>
     <string name="message_ether_sending_error">Error occured sending Ether!</string>
+    <string name="your_address">Your address:</string>
+    <string name="all_surveys">All surveys</string>
+    <string name="your_surveys">Your surveys:</string>
+    <string name="my_surveys">My Surveys</string>
 
     <string-array name="eth_unit">
         <item>wei</item>

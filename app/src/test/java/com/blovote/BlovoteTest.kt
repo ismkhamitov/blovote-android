@@ -1,9 +1,6 @@
 package com.blovote.test
 
 import com.blovote.contracts.Contracts_BloGodImpl_sol_BloGodImpl
-import com.blovote.contracts.Contracts_BlovoteImpl_sol_BlovoteImpl
-import com.blovote.surveys.data.entities.QuestionType
-import com.blovote.surveys.data.entities.SurveyState
 import org.junit.Test
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
@@ -12,8 +9,6 @@ import org.web3j.protocol.Web3jFactory
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.Contract
 import org.web3j.tx.ManagedTransaction
-import java.math.BigInteger
-import java.nio.charset.Charset
 
 private val NODE_ADDRESS = "https://rinkeby.infura.io/QY0BaVdS6Y3uQBYLnfJJ"
 
@@ -38,15 +33,15 @@ class BlovoteTest {
     @Test
     fun testDeployGod() {
 
-        println("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
-
-
-        println("Deploying smart-contract")
-
-        val contractGod : Contracts_BloGodImpl_sol_BloGodImpl = Contracts_BloGodImpl_sol_BloGodImpl
-                .deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
-
-        print("Smart contract deployed to address: ${contractGod.contractAddress}")
+//        println("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
+//
+//
+//        println("Deploying smart-contract")
+//
+//        val contractGod : Contracts_BloGodImpl_sol_BloGodImpl = Contracts_BloGodImpl_sol_BloGodImpl
+//                .deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
+//
+//        print("Smart contract deployed to address: ${contractGod.contractAddress}")
     }
 
     @Test

@@ -21,16 +21,26 @@ class AccountInteractorImpl(val accountStorage: AccountStorage,
                     val getBalance = web3j.ethGetBalance(accountStorage.loadCredentials().address,
                             DefaultBlockParameterName.LATEST).send()
                     if (getBalance.hasError()) {
-                        emitter.onError(IllegalStateException())
+                        if (!emitter.isDisposed) {
+                            emitter.onError(IllegalStateException())
+                        }
                     } else {
-                        emitter.onSuccess(getBalance.balance)
+                        if (!emitter.isDisposed) {
+                            emitter.onSuccess(getBalance.balance)
+                        }
                     }
                 } catch (e: Exception) {
-                    emitter.onError(e)
+                    if (!emitter.isDisposed) {
+                        emitter.onError(e)
+                    }
                 }
         }
 
         return getBalanceSingle.subscribeOn(Schedulers.computation())
+    }
+
+    override fun getAddress(): String {
+        return accountStorage.loadCredentials().address
     }
 
     override fun sendEther(address: String, amount: BigDecimal, unit: Convert.Unit): Completable {
@@ -38,9 +48,14 @@ class AccountInteractorImpl(val accountStorage: AccountStorage,
             try {
                 Transfer.sendFunds(web3j, accountStorage.loadCredentials(), address,
                         amount, unit).send()
-                emitter.onComplete()
+                if (!emitter.isDisposed) {
+                    emitter.onComplete()
+                }
             } catch (e: Exception) {
-                emitter.onError(e)
+                e.printStackTrace()
+                if (!emitter.isDisposed) {
+                    emitter.onError(e)
+                }
             }
 
         }

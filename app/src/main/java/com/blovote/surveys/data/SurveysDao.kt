@@ -24,6 +24,9 @@ interface SurveysDao {
     @Query("SELECT * FROM surveys ORDER BY creation_time DESC")
     fun getAllSurveys() : LiveData<List<Survey>>
 
+    @Query("SELECT * FROM surveys WHERE creator = :address ORDER BY creation_time DESC")
+    fun getCreatorsSurveys(address: String): LiveData<List<Survey>>
+
     @Query("SELECT * FROM surveys WHERE creation_time >= :timestamp ORDER BY creation_time DESC")
     fun getSurveysAfter(timestamp : Long) : LiveData<List<Survey>>
 

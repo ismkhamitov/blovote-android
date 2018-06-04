@@ -2,6 +2,8 @@ package com.blovote.surveys.ui
 
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.LinearLayoutManager
@@ -14,12 +16,13 @@ import com.blovote.app.App
 import com.blovote.app.BlovoteActivity
 import com.blovote.surveys.domain.SurveysInteractor
 import com.blovote.surveys.ui.creation.CreateSurveyActivity
+import com.blovote.surveys.ui.monitoring.MySurveysFragment
 import com.blovote.surveys.ui.passing.SurveyActivity
 import com.blovote.wallet.ui.WalletControlFragment
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_main_surveys.*
 import kotlinx.android.synthetic.main.app_bar_main_surveys.*
-import kotlinx.android.synthetic.main.content_main_surveys.*
+import kotlinx.android.synthetic.main.content_all_surveys.*
 import javax.inject.Inject
 
 class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -84,7 +87,7 @@ class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSe
     }
 
     private fun setupData() {
-        adapter.startObservingSurveys(this)
+        adapter.startObservingSurveys(surveysInteractor.observeExistingSurveys(this))
         surveysInteractor.requestSurveysUpdate().subscribe()
     }
 
@@ -121,37 +124,34 @@ class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSe
                 surveysInteractor.requestSurveysUpdate().subscribe()
                 return true
             }
-            R.id.action_settings -> return true
             else -> return super.onOptionsItemSelected(item)
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        item.isChecked = true
+
+        var fragment : Fragment? = null
         // Handle navigation view item clicks here.
         when (item.itemId) {
+            R.id.nav_all_questions -> {
+                supportFragmentManager.popBackStack()
+            }
             R.id.nav_wallet -> {
-                if (supportFragmentManager.findFragmentByTag(TAG_WALLET_FRAGMENT) == null) {
-                    supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_content, WalletControlFragment.newInstance(), TAG_WALLET_FRAGMENT)
-                            .addToBackStack(null)
-                            .commit()
-                }
+                fragment = WalletControlFragment.newInstance()
             }
-            R.id.nav_gallery -> {
+            R.id.nav_my_surveys -> {
+                fragment = MySurveysFragment.newInstance()
+            }
+        }
 
-            }
-            R.id.nav_slideshow -> {
 
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
-            }
+        if (fragment != null) {
+            supportFragmentManager.popBackStack(TAG_BACKSTACK, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_content, fragment, TAG_FRAGMENT)
+                    .addToBackStack(TAG_BACKSTACK)
+                    .commit()
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
@@ -159,14 +159,16 @@ class MainSurveysActivity : BlovoteActivity(), NavigationView.OnNavigationItemSe
     }
 
 
-    fun onSurveyClicked(address: String, index: Int) {
+    private fun onSurveyClicked(address: String, index: Int) {
         startActivity(SurveyActivity.getStartIntent(this, address, index))
     }
 
 
     companion object {
 
-        private val TAG_WALLET_FRAGMENT = "wallet_fragment"
+        private val TAG_FRAGMENT = "content_fragment"
+
+        private val TAG_BACKSTACK = "backstack"
 
     }
 

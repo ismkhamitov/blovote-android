@@ -15,6 +15,8 @@ interface SurveysRepository {
 
     fun observeAllSurveys(lifecycleOwner: LifecycleOwner) : Observable<List<Survey>>
 
+    fun observeCreatorsQuestions(lifecycleOwner: LifecycleOwner, address: String): Observable<List<Survey>>
+
     fun updateSurveyInfo(survey: Survey) : Single<Survey>
 
     fun updateSurveys() : List<Survey>
