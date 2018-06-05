@@ -91,4 +91,35 @@ class QuestionsConverter {
         return QuestionType.values()[int]
     }
 
+    @TypeConverter
+    fun dataToString(data: List<List<String>>) : String {
+        val array = JSONArray()
+        data.forEach {
+            val answer = JSONArray()
+            it.forEach { answer.put(it) }
+            array.put(answer)
+        }
+
+        return array.toString()
+    }
+
+    @TypeConverter
+    fun stringToData(jsonData: String) : List<List<String>> {
+        val jsonArray = JSONArray(jsonData)
+
+        val data : MutableList<List<String>> = ArrayList()
+
+        for (i in 0 until jsonArray.length()) {
+            val answerArray = JSONArray(jsonArray.get(i))
+            val answers : MutableList<String> = ArrayList()
+            for (j in 0 until answerArray.length()) {
+                answers.add(answerArray.get(j).toString())
+            }
+
+            data.add(answers)
+        }
+
+        return data
+    }
+
 }

@@ -57,7 +57,7 @@ class SurveyActivity : BlovoteActivity(), QuestionPassListener {
         address = intent.extras.getString(KEY_ADDRESS)
         index = intent.extras.getInt(KEY_INDEX)
 
-        updateQuestionFragment(SurveyDetailsFragment.newInstance(address, index),true)
+        updateQuestionFragment(SurveyDetailsFragment.newInstance(address, index, false),true)
     }
 
     override fun onDestroy() {

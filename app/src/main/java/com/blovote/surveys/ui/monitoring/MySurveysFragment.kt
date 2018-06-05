@@ -11,7 +11,6 @@ import com.blovote.R
 import com.blovote.app.App
 import com.blovote.surveys.domain.SurveysInteractor
 import com.blovote.surveys.ui.SurveysAdapter
-import com.blovote.surveys.ui.passing.SurveyActivity
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -59,7 +58,7 @@ class MySurveysFragment : Fragment() {
     private fun onSurveyClicked(address: String, index: Int) {
         val context = this.context
         if (context != null) {
-            startActivity(SurveyActivity.getStartIntent(context, address, index))
+            startActivity(MySurveyActivity.getStartIntent(context, address, index))
         }
     }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.blovote.R
@@ -28,11 +29,16 @@ class SurveyDetailsFragment : Fragment() {
     private lateinit var progressBarState : ProgressBar
     private lateinit var stateTextView : TextView
     private lateinit var questionsCountTextView: TextView
+    private lateinit var progressBarCurrResp : ProgressBar
+    private lateinit var textViewCurrResp : TextView
+    private lateinit var buttonViewResults : Button
+    private lateinit var buttonExportResults : Button
     private lateinit var buttonStart : Button
 
     private lateinit var address : String
     private var index : Int = -1
     private lateinit var survey: Survey
+    private var monitorMode : Boolean = false
 
 
     @Inject
@@ -61,6 +67,7 @@ class SurveyDetailsFragment : Fragment() {
     private fun setupUI(view: View) {
         address = arguments!!.getString(KEY_ADDRESS)
         index = arguments!!.getInt(KEY_INDEX)
+        monitorMode = arguments!!.getBoolean(KEY_MONITOR_MODE)
 
         titleView = view.findViewById(R.id.title)
         rewardTextView = view.findViewById(R.id.text_view_reward_unit)
@@ -68,7 +75,22 @@ class SurveyDetailsFragment : Fragment() {
         progressBarState = view.findViewById(R.id.progress_bar_survey_state)
         stateTextView = view.findViewById(R.id.text_view_survey_state)
         questionsCountTextView = view.findViewById(R.id.text_view_questions_count)
+        progressBarCurrResp = view.findViewById(R.id.progress_bar_curr_resp_count)
+        textViewCurrResp = view.findViewById(R.id.text_view_curr_resp_count)
+        buttonViewResults = view.findViewById(R.id.button_view_results)
+        buttonExportResults = view.findViewById(R.id.button_export_results)
         buttonStart = view.findViewById(R.id.button_create)
+
+        val delimiterCurrRespCount = view.findViewById<View>(R.id.delimiter_curr_resp_count)
+        val layoutCurrRespCount = view.findViewById<LinearLayout>(R.id.layout_curr_resp_count)
+        if (!monitorMode) {
+            delimiterCurrRespCount.visibility = View.GONE
+            layoutCurrRespCount.visibility = View.GONE
+            buttonViewResults.visibility = View.GONE
+            buttonExportResults.visibility = View.GONE
+        } else {
+            buttonStart.visibility = View.GONE
+        }
 
     }
 
@@ -101,6 +123,7 @@ class SurveyDetailsFragment : Fragment() {
 
         progressBarState.visibility = View.GONE
         progressBarQuestions.visibility = View.GONE
+        progressBarCurrResp.visibility = View.GONE
 
         stateTextView.text = getString(survey.state.nameResId)
         stateTextView.visibility = View.VISIBLE
@@ -108,6 +131,14 @@ class SurveyDetailsFragment : Fragment() {
         questionsCountTextView.text = (survey.filterQuestionsCount + survey.questionsCount).toString()
         questionsCountTextView.visibility = View.VISIBLE
 
+        textViewCurrResp.text = survey.currentRespCount.toString()
+        textViewCurrResp.visibility = View.VISIBLE
+
+        if (survey.currentRespCount > 0) {
+            buttonViewResults.isEnabled = true
+            buttonExportResults.isEnabled = true
+            //TODO: handle clicks
+        }
         buttonStart.isEnabled = true
         buttonStart.onClick {
             (activity as? QuestionPassListener)?.onPassNext(survey)
@@ -119,13 +150,15 @@ class SurveyDetailsFragment : Fragment() {
 
         private val KEY_ADDRESS = "address"
         private val KEY_INDEX = "index"
+        private val KEY_MONITOR_MODE = "monitor"
 
-        fun newInstance(surveyAddress: String, index: Int) : Fragment {
+        fun newInstance(surveyAddress: String, index: Int, monitorState: Boolean) : Fragment {
             val fragment = SurveyDetailsFragment()
 
             val bundle = Bundle()
             bundle.putString(KEY_ADDRESS, surveyAddress)
             bundle.putInt(KEY_INDEX, index)
+            bundle.putBoolean(KEY_MONITOR_MODE, monitorState)
 
             fragment.arguments = bundle
             return fragment

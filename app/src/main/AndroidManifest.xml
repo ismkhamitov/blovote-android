@@ -28,6 +28,7 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity android:name=".surveys.ui.passing.SurveyActivity" />
+        <activity android:name=".surveys.ui.monitoring.MySurveyActivity" />
 
     </application>
 

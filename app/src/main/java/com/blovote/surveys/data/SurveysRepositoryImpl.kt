@@ -182,6 +182,45 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
     }
 
 
+    override fun loadRespondInfo(surveyAddress: String, index: Int): Completable {
+        return Completable.create {
+            try {
+                val blovote = getBlovoteContract(surveyAddress)
+                val questionsCount = blovote.questionsCount.send().toInt()
+
+                val data : MutableList<List<String>> = ArrayList()
+                for (i in 0 until questionsCount) {
+                    val answersArray = blovote.getRespondData(i.toBigInteger(), index.toBigInteger()).send()
+                    val questionInfo = blovote.getQuestionInfo(i.toBigInteger()).send()
+                    val type = QuestionType.fromContractQuestionType(questionInfo.value1)
+
+                    val answer = if (type == QuestionType.Text) {
+                        listOf(answersArray.toString(Charset.forName("UTF-8")))
+                    } else {
+                        answersArray.map { it.toString() }
+                    }
+
+                    data.add(answer)
+                }
+
+                surveysStorage.saveRespond(surveyAddress, index, data)
+                it.onComplete()
+
+            } catch (e: Exception) {
+                it.onError(e)
+            }
+        }
+
+    }
+
+    override fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String): Observable<List<Respond>> {
+        return Observable.create {
+            surveysStorage.getResponds(surveyAddress).observe(lifecycleOwner,
+                    Observer<List<Respond>> { r -> it.onNext(r!!) })
+        }
+    }
+
+
     private fun loadBlovote(address : String, index : Int) : Survey {
         val prevSurvey = surveysStorage.getSurvey(address)
 

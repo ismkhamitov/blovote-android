@@ -3,6 +3,7 @@ package com.blovote.surveys.data
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import com.blovote.surveys.data.entities.Question
+import com.blovote.surveys.data.entities.Respond
 import com.blovote.surveys.data.entities.Survey
 
 
@@ -35,5 +36,12 @@ interface SurveysDao {
 
     @Query("SELECT * FROM surveys WHERE eth_address = :address")
     fun getSurveyByAddress(address: String): List<Survey>
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertResponds(responds: List<Respond>)
+
+    @Query("SELECT * FROM responds WHERE survey_eth_address = :surveyAddress ORDER BY `index` ASC")
+    fun getResponds(surveyAddress: String) : LiveData<List<Respond>>
 
 }

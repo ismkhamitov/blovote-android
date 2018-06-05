@@ -4,12 +4,12 @@ import android.arch.lifecycle.LifecycleOwner
 import com.blovote.account.data.AccountStorage
 import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.QuestionCategory
+import com.blovote.surveys.data.entities.Respond
 import com.blovote.surveys.data.entities.Survey
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import org.web3j.protocol.Web3j
 import java.math.BigInteger
 
 class SurveysInteractorImpl(val surveysRepository: SurveysRepository,
@@ -73,5 +73,13 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository,
             }
             it.onComplete()
         }).subscribeOn(Schedulers.computation())
+    }
+
+    override fun loadRespondInfo(surveyAddress: String, index: Int): Completable {
+        return surveysRepository.loadRespondInfo(surveyAddress, index).subscribeOn(Schedulers.computation())
+    }
+
+    override fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String): Observable<List<Respond>> {
+        return surveysRepository.getResponds(lifecycleOwner, surveyAddress).subscribeOn(Schedulers.computation())
     }
 }

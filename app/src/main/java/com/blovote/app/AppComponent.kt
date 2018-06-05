@@ -5,6 +5,7 @@ import com.blovote.contracts.di.ContractsModule
 import com.blovote.surveys.di.SurveysModule
 import com.blovote.surveys.ui.MainSurveysActivity
 import com.blovote.surveys.ui.creation.CreateSurveyActivity
+import com.blovote.surveys.ui.monitoring.MySurveyActivity
 import com.blovote.surveys.ui.monitoring.MySurveysFragment
 import com.blovote.surveys.ui.passing.SurveyActivity
 import com.blovote.surveys.ui.passing.SurveyDetailsFragment
@@ -35,5 +36,7 @@ interface AppComponent {
     fun inject(walletControlFragment: WalletControlFragment)
 
     fun inject(mySurveysFragment: MySurveysFragment)
+
+    fun inject(mySurveyActivity: MySurveyActivity)
 
 }

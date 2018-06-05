@@ -3,10 +3,12 @@ package com.blovote.surveys.domain
 import android.arch.lifecycle.LifecycleOwner
 import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.QuestionCategory
+import com.blovote.surveys.data.entities.Respond
 import com.blovote.surveys.data.entities.Survey
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.internal.operators.observable.ObservableError
 import java.math.BigInteger
 
 interface SurveysRepository {
@@ -35,5 +37,9 @@ interface SurveysRepository {
 
     fun uploadAnswer(survey: Survey, questionIndex: Int, answers: List<String>): Completable
 
+
+    fun loadRespondInfo(surveyAddress: String, index: Int) : Completable
+
+    fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String) : Observable<List<Respond>>
 
 }

@@ -61,6 +61,9 @@
     <string name="all_surveys">All surveys</string>
     <string name="your_surveys">Your surveys:</string>
     <string name="my_surveys">My Surveys</string>
+    <string name="current_respondents_count">Current respondents count:</string>
+    <string name="view_results">View results</string>
+    <string name="export_results">Export results</string>
 
     <string-array name="eth_unit">
         <item>wei</item>

@@ -150,13 +150,12 @@ public class Contracts_Blovote_sol_Blovote extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> getRespondData(BigInteger qIndex, BigInteger respondIndex) {
-        final Function function = new Function(
-                FUNC_GETRESPONDDATA, 
+    public RemoteCall<byte[]> getRespondData(BigInteger qIndex, BigInteger respondIndex) {
+        final Function function = new Function(FUNC_GETRESPONDDATA, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(qIndex), 
                 new org.web3j.abi.datatypes.generated.Uint256(respondIndex)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicBytes>() {}));
+        return executeRemoteCallSingleValueReturn(function, byte[].class);
     }
 
     public RemoteCall<Tuple2<BigInteger, byte[]>> getQuestionInfo(BigInteger index) {
