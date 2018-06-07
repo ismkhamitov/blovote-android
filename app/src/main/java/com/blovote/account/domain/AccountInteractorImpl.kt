@@ -18,7 +18,7 @@ class AccountInteractorImpl(val accountStorage: AccountStorage,
     override fun getBalance(): Single<BigInteger> {
         val getBalanceSingle : Single<BigInteger> = Single.create { emitter ->
                 try {
-                    val getBalance = web3j.ethGetBalance(accountStorage.loadCredentials().address,
+                    val getBalance = web3j.ethGetBalance(accountStorage.getCredentials().address,
                             DefaultBlockParameterName.LATEST).send()
                     if (getBalance.hasError()) {
                         if (!emitter.isDisposed) {
@@ -40,13 +40,13 @@ class AccountInteractorImpl(val accountStorage: AccountStorage,
     }
 
     override fun getAddress(): String {
-        return accountStorage.loadCredentials().address
+        return accountStorage.getCredentials().address
     }
 
     override fun sendEther(address: String, amount: BigDecimal, unit: Convert.Unit): Completable {
         val sendCompletable = Completable.create { emitter ->
             try {
-                Transfer.sendFunds(web3j, accountStorage.loadCredentials(), address,
+                Transfer.sendFunds(web3j, accountStorage.getCredentials(), address,
                         amount, unit).send()
                 if (!emitter.isDisposed) {
                     emitter.onComplete()

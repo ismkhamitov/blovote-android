@@ -2,16 +2,20 @@ package com.blovote.account.data
 
 import io.reactivex.Single
 import org.web3j.crypto.Credentials
-import java.io.File
-import java.math.BigInteger
+import java.io.InputStream
 
 interface AccountStorage {
 
     fun isWalletExists() : Boolean
 
-    fun createNewWallet(password: String): Credentials
+    fun createNewWallet(password: String): Single<Credentials>
 
-    fun loadCredentials(): Credentials
+    fun updateWallet(password: String, walletFileStream: InputStream): Single<Boolean>
 
-    fun updateCredentials(password: String, walletFile: File): Boolean
+
+    fun areCredentialsLoaded() : Boolean
+
+    fun loadCredentials() : Single<Credentials>
+
+    fun getCredentials(): Credentials
 }

@@ -23,7 +23,7 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
     private val gasPrice by lazy { web3j.ethGasPrice().send().gasPrice.multiply(BigInteger.valueOf(5L)) }
 
     private val contractBloGodImpl by lazy { Contracts_BloGodImpl_sol_BloGodImpl.load(
-            godContractAddress, web3j, accountStorage.loadCredentials(), gasPrice, Contract.GAS_LIMIT) }
+            godContractAddress, web3j, accountStorage.getCredentials(), gasPrice, Contract.GAS_LIMIT) }
 
     override fun getAllSurveys(): List<Survey> {
         return surveysStorage.getAllSurveys().value ?: listOf()
@@ -188,7 +188,7 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                 val blovote = getBlovoteContract(surveyAddress)
                 val questionsCount = blovote.questionsCount.send().toInt()
 
-                val data : MutableList<List<String>> = ArrayList()
+                val data : MutableList<Answers> = ArrayList()
                 for (i in 0 until questionsCount) {
                     val answersArray = blovote.getRespondData(i.toBigInteger(), index.toBigInteger()).send()
                     val questionInfo = blovote.getQuestionInfo(i.toBigInteger()).send()
@@ -200,7 +200,7 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                         answersArray.map { it.toString() }
                     }
 
-                    data.add(answer)
+                    data.add(Answers(answer))
                 }
 
                 surveysStorage.saveRespond(surveyAddress, index, data)
@@ -304,7 +304,7 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
 
 
     private fun getBlovoteContract(address: String) : Contracts_BlovoteImpl_sol_BlovoteImpl {
-        return Contracts_BlovoteImpl_sol_BlovoteImpl.load(address, web3j, accountStorage.loadCredentials(),
+        return Contracts_BlovoteImpl_sol_BlovoteImpl.load(address, web3j, accountStorage.getCredentials(),
                 gasPrice, Contract.GAS_LIMIT)
     }
 

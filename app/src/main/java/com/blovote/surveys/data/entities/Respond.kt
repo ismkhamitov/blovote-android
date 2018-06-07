@@ -12,7 +12,7 @@ import android.arch.persistence.room.PrimaryKey
             onDelete = ForeignKey.CASCADE)])
 data class Respond(@ColumnInfo(name = "survey_eth_address") var address : String,
                    @ColumnInfo(name = "index") var index : Int = 0,
-                   @ColumnInfo(name = "data") var data : List<List<String>> = ArrayList()) {
+                   @ColumnInfo(name = "data") var data : List<Answers> = ArrayList()) {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

@@ -1,6 +1,7 @@
 package com.blovote.surveys.data
 
 import android.arch.lifecycle.LiveData
+import com.blovote.surveys.data.entities.Answers
 import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.Respond
 import com.blovote.surveys.data.entities.Survey
@@ -57,7 +58,7 @@ class SurveysStorageImpl(storage: SurveysDatabase) : SurveysStorage {
     }
 
 
-    override fun saveRespond(surveyAddress: String, index: Int, data: List<List<String>>) {
+    override fun saveRespond(surveyAddress: String, index: Int, data: List<Answers>) {
         surveysDao.insertResponds(listOf(Respond(surveyAddress, index, data)))
     }
 

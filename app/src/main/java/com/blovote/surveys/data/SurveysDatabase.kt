@@ -8,10 +8,11 @@ import android.content.Context
 import com.blovote.surveys.data.entities.Respond
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.data.entities.util.QuestionsConverter
+import com.blovote.surveys.data.entities.util.RespondsConverter
 
 
 @Database(entities = [ Survey::class, Respond::class ], version = 1)
-@TypeConverters(QuestionsConverter::class)
+@TypeConverters(QuestionsConverter::class, RespondsConverter::class)
 abstract class SurveysDatabase : RoomDatabase() {
 
     abstract fun surveysDao() : SurveysDao

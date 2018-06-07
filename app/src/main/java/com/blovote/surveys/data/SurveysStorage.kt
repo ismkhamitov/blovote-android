@@ -1,6 +1,7 @@
 package com.blovote.surveys.data
 
 import android.arch.lifecycle.LiveData
+import com.blovote.surveys.data.entities.Answers
 import com.blovote.surveys.data.entities.Question
 import com.blovote.surveys.data.entities.Respond
 import com.blovote.surveys.data.entities.Survey
@@ -27,7 +28,7 @@ interface SurveysStorage {
     fun deleteSurvey(address: String)
 
 
-    fun saveRespond(surveyAddress: String, index: Int, data: List<List<String>>)
+    fun saveRespond(surveyAddress: String, index: Int, data: List<Answers>)
 
     fun getResponds(surveyAddress: String) : LiveData<List<Respond>>
 }

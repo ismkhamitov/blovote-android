@@ -1,51 +1,72 @@
 package com.blovote.account.data
 
 import android.content.Context
+import io.reactivex.Single
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
 import java.io.File
+import java.io.InputStream
 
 
 class MockAccountStorage(val context: Context) : AccountStorage {
 
-    var creds: Credentials
+    private var creds: Credentials? = null
 
-    init {
-        var targetFile = File(context.filesDir, "key")
-        val stream = context.assets.open("key")
 
-        if (targetFile.exists()) {
-            targetFile.delete()
-        }
-
-        val os = targetFile.outputStream()
-        val buffer = ByteArray(1024)
-        var len : Int
-        while (true) {
-            len = stream.read(buffer)
-            if (len == -1) break
-
-            os.write(buffer, 0, len)
-        }
-        os.close()
-
-        creds = WalletUtils.loadCredentials(PASSWORD, targetFile)
+    override fun areCredentialsLoaded(): Boolean {
+        return creds != null
     }
 
     override fun isWalletExists(): Boolean {
         return true
     }
 
-    override fun createNewWallet(password: String): Credentials {
+    override fun createNewWallet(password: String): Single<Credentials> {
         throw NotImplementedError()
     }
 
-    override fun loadCredentials(): Credentials {
-        return creds
+    override fun getCredentials(): Credentials {
+        if (creds == null) {
+            throw IllegalStateException("Credentials are not loaded")
+        }
+        return creds!!
     }
 
-    override fun updateCredentials(password: String, walletFile: File): Boolean {
+    override fun updateWallet(password: String, walletFileStream: InputStream): Single<Boolean> {
         throw NotImplementedError()
+    }
+
+    override fun loadCredentials(): Single<Credentials> {
+        return Single.create {
+            if (creds == null) {
+                val targetFile = File(context.filesDir, "key")
+                val stream = context.assets.open("key")
+
+                if (targetFile.exists()) {
+                    targetFile.delete()
+                }
+
+                val os = targetFile.outputStream()
+
+                try {
+                    val buffer = ByteArray(1024)
+                    var len: Int
+                    while (true) {
+                        len = stream.read(buffer)
+                        if (len == -1) break
+
+                        os.write(buffer, 0, len)
+                    }
+                    creds = WalletUtils.loadCredentials(PASSWORD, targetFile)
+                } catch (e: Exception) {
+                    it.onError(e)
+                } finally {
+                    os.close()
+                }
+            }
+
+            it.onSuccess(creds!!)
+        }
     }
 
     companion object {

@@ -2,7 +2,7 @@ package com.blovote.account.di
 
 import android.content.Context
 import com.blovote.account.data.AccountStorage
-import com.blovote.account.data.MockAccountStorage
+import com.blovote.account.data.AccountStorageImpl
 import com.blovote.account.domain.AccountInteractor
 import com.blovote.account.domain.AccountInteractorImpl
 import dagger.Module
@@ -16,8 +16,7 @@ class AccountInfoModule {
     @Provides
     @Singleton
     fun provideAccountStorage(context: Context) : AccountStorage {
-        //TODO: return AccountStorageImpl(context)
-        return MockAccountStorage(context)
+        return AccountStorageImpl(context)
     }
 
     @Provides

@@ -28,7 +28,7 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository,
     }
 
     override fun observeMySurveys(lifecycleOwner: LifecycleOwner): Observable<List<Survey>> {
-        return surveysRepository.observeCreatorsQuestions(lifecycleOwner, accountStorage.loadCredentials().address)
+        return surveysRepository.observeCreatorsQuestions(lifecycleOwner, accountStorage.getCredentials().address)
     }
 
     override fun updateSurveyInfo(survey: Survey): Single<Survey> {
