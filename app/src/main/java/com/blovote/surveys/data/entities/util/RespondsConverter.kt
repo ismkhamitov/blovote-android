@@ -12,7 +12,7 @@ class RespondsConverter {
         val array = JSONArray()
         answers.forEach {
             val answer = JSONArray()
-            it.data.forEach { answer.put(it) }
+            it.data.forEach { r -> answer.put(r) }
             array.put(answer)
         }
 
@@ -26,7 +26,7 @@ class RespondsConverter {
         val data : MutableList<Answers> = ArrayList()
 
         for (i in 0 until jsonArray.length()) {
-            val answerArray = JSONArray(jsonArray.get(i))
+            val answerArray = JSONArray(jsonArray.get(i).toString())
             val answers : MutableList<String> = ArrayList()
             for (j in 0 until answerArray.length()) {
                 answers.add(answerArray.get(j).toString())

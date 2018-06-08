@@ -42,6 +42,9 @@ interface SurveysDao {
     fun insertResponds(responds: List<Respond>)
 
     @Query("SELECT * FROM responds WHERE survey_eth_address = :surveyAddress ORDER BY `index` ASC")
-    fun getResponds(surveyAddress: String) : LiveData<List<Respond>>
+    fun getAllResponds(surveyAddress: String) : LiveData<List<Respond>>
+
+    @Query("SELECT * FROM responds WHERE survey_eth_address = :surveyAddress AND `index` = :index")
+    fun getRespond(surveyAddress: String, index: Int) : LiveData<List<Respond>>
 
 }

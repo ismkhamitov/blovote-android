@@ -33,15 +33,15 @@ class BlovoteTest {
     @Test
     fun testDeployGod() {
 
-//        println("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
-//
-//
-//        println("Deploying smart-contract")
-//
-//        val contractGod : Contracts_BloGodImpl_sol_BloGodImpl = Contracts_BloGodImpl_sol_BloGodImpl
-//                .deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
-//
-//        print("Smart contract deployed to address: ${contractGod.contractAddress}")
+        println("Connected to Ethereum client version: ${web3j.web3ClientVersion().send().web3ClientVersion}")
+
+
+        println("Deploying smart-contract")
+
+        val contractGod : Contracts_BloGodImpl_sol_BloGodImpl = Contracts_BloGodImpl_sol_BloGodImpl
+                .deploy(web3j, credentials, ManagedTransaction.GAS_PRICE, Contract.GAS_LIMIT).send()
+
+        print("Smart contract deployed to address: ${contractGod.contractAddress}")
     }
 
     @Test

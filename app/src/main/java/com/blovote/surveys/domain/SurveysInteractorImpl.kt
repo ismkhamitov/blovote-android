@@ -39,6 +39,10 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository,
         return surveysRepository.updateSurveyQuestionInfo(survey, category, index).subscribeOn(Schedulers.computation())
     }
 
+    override fun updateSurveyAllQuestionsInfo(survey: Survey): Single<Survey> {
+        return surveysRepository.updateSurveyAllQuestionsInfo(survey).subscribeOn(Schedulers.computation())
+    }
+
     override fun checkAnswer(survey: Survey, questionIndex: Int, answers: List<String>) : Single<Boolean> {
         return surveysRepository.checkAnswer(survey, questionIndex, answers).subscribeOn(Schedulers.computation())
     }
@@ -80,6 +84,12 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository,
     }
 
     override fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String): Observable<List<Respond>> {
-        return surveysRepository.getResponds(lifecycleOwner, surveyAddress).subscribeOn(Schedulers.computation())
+        return surveysRepository.getResponds(lifecycleOwner, surveyAddress)
+                .subscribeOn(Schedulers.computation())
+    }
+
+    override fun getRespond(lifecycleOwner: LifecycleOwner, surveyAddress: String, index: Int) : Observable<Respond> {
+        return surveysRepository.getRespond(lifecycleOwner, surveyAddress, index)
+                .subscribeOn(Schedulers.computation())
     }
 }

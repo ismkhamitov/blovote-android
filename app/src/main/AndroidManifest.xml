@@ -31,10 +31,15 @@
 
         <activity android:name=".surveys.ui.passing.SurveyActivity"
             android:screenOrientation="portrait"/>
+
         <activity android:name=".surveys.ui.monitoring.MySurveyActivity"
             android:screenOrientation="portrait"/>
+
         <activity android:name=".surveys.ui.MainSurveysActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".surveys.ui.monitoring.AnswersActivity"
             android:screenOrientation="portrait"/>
 
     </application>

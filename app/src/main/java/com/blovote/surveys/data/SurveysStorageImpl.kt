@@ -63,6 +63,10 @@ class SurveysStorageImpl(storage: SurveysDatabase) : SurveysStorage {
     }
 
     override fun getResponds(surveyAddress: String): LiveData<List<Respond>> {
-        return surveysDao.getResponds(surveyAddress)
+        return surveysDao.getAllResponds(surveyAddress)
+    }
+
+    override fun getRespond(surveyAddress: String, index: Int) : LiveData<List<Respond>> {
+        return surveysDao.getRespond(surveyAddress, index)
     }
 }

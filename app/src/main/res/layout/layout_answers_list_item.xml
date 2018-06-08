@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:layout_marginBottom="16dp">
+
+    <TextView
+        android:id="@+id/text_view_question_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Blovote.Title"
+        android:textColor="@color/colorAccentDark"
+        android:textSize="24sp"
+        android:text="Question title"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.25dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimaryLight" />
+
+    <TextView
+        android:id="@+id/text_view_text_answer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Blovote.Body1"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textSize="16sp"
+        tools:text="Text answer"/>
+
+    <LinearLayout
+        android:id="@+id/layout_points_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorPrimaryDark" />
+
+</LinearLayout>

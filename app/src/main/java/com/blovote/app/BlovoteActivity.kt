@@ -16,6 +16,10 @@ abstract class BlovoteActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         App.appComponent.inject(this)
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         if (needToInitWallet()) {
             val intent = Intent(this, WizardActivity::class.java)
@@ -24,7 +28,6 @@ abstract class BlovoteActivity : AppCompatActivity() {
             finish()
         }
     }
-
 
     private fun needToInitWallet() : Boolean {
         return !accountStorage.isWalletExists() || !accountStorage.areCredentialsLoaded()

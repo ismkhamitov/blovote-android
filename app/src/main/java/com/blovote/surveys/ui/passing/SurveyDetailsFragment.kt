@@ -13,6 +13,7 @@ import com.blovote.R
 import com.blovote.app.App
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.domain.SurveysInteractor
+import com.blovote.surveys.ui.monitoring.AnswersActivity
 import com.blovote.surveys.ui.toReadableString
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -137,7 +138,16 @@ class SurveyDetailsFragment : Fragment() {
         if (survey.currentRespCount > 0) {
             buttonViewResults.isEnabled = true
             buttonExportResults.isEnabled = true
-            //TODO: handle clicks
+
+            buttonViewResults.onClick {
+                val context = this@SurveyDetailsFragment.context
+                if (context != null) {
+                    startActivity(AnswersActivity.getStartIntent(context, address))
+                }
+            }
+
+
+            //TODO: handle export
         }
         buttonStart.isEnabled = true
         buttonStart.onClick {

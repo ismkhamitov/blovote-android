@@ -6,6 +6,8 @@ import com.blovote.contracts.di.ContractsModule
 import com.blovote.surveys.di.SurveysModule
 import com.blovote.surveys.ui.MainSurveysActivity
 import com.blovote.surveys.ui.creation.CreateSurveyActivity
+import com.blovote.surveys.ui.monitoring.AnswersActivity
+import com.blovote.surveys.ui.monitoring.AnswersListFragment
 import com.blovote.surveys.ui.monitoring.MySurveyActivity
 import com.blovote.surveys.ui.monitoring.MySurveysFragment
 import com.blovote.surveys.ui.passing.SurveyActivity
@@ -48,5 +50,9 @@ interface AppComponent {
     fun inject(wizardActivity: WizardActivity)
 
     fun inject(blovoteActivity: BlovoteActivity)
+
+    fun inject(answersListFragment: AnswersListFragment)
+
+    fun inject(answersActivity: AnswersActivity)
 
 }

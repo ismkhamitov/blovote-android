@@ -70,6 +70,23 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         }
     }
 
+
+    override fun updateSurveyAllQuestionsInfo(survey: Survey) : Single<Survey> {
+        return Single.create {
+            try {
+                var updatedSurvey: Survey = survey
+                for (i in 0 until survey.questionsCount) {
+                    if (updatedSurvey.questions.size <= i || updatedSurvey.questions[i].title.isEmpty()) {
+                        updatedSurvey = loadQuestion(survey, QuestionCategory.MainQuestion, i)
+                    }
+                }
+                it.onSuccess(updatedSurvey)
+            } catch (e: Exception) {
+                it.onError(e)
+            }
+        }
+    }
+
     override fun createSurvey(title: String,
                         requiredRespondentsCount: Int,
                         rewardSize: BigInteger,
@@ -195,19 +212,24 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                     val type = QuestionType.fromContractQuestionType(questionInfo.value1)
 
                     val answer = if (type == QuestionType.Text) {
-                        listOf(answersArray.toString(Charset.forName("UTF-8")))
+                        listOf(answersArray.value2.toString(Charset.forName("UTF-8")))
                     } else {
-                        answersArray.map { it.toString() }
+                        answersArray.value2.map { it.toString() }
                     }
 
                     data.add(Answers(answer))
                 }
 
+
                 surveysStorage.saveRespond(surveyAddress, index, data)
-                it.onComplete()
+                if (!it.isDisposed) {
+                    it.onComplete()
+                }
 
             } catch (e: Exception) {
-                it.onError(e)
+                if (!it.isDisposed) {
+                    it.onError(e)
+                }
             }
         }
 
@@ -217,6 +239,17 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
         return Observable.create {
             surveysStorage.getResponds(surveyAddress).observe(lifecycleOwner,
                     Observer<List<Respond>> { r -> it.onNext(r!!) })
+        }
+    }
+
+    override fun getRespond(lifecycleOwner: LifecycleOwner, surveyAddress: String, index: Int) : Observable<Respond> {
+        return Observable.create {
+            surveysStorage.getRespond(surveyAddress, index).observe(lifecycleOwner,
+                    Observer<List<Respond>> { r ->
+                        if (r != null && !r.isEmpty()) {
+                            it.onNext(r[0])
+                        }
+                    })
         }
     }
 

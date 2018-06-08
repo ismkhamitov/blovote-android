@@ -31,4 +31,6 @@ interface SurveysStorage {
     fun saveRespond(surveyAddress: String, index: Int, data: List<Answers>)
 
     fun getResponds(surveyAddress: String) : LiveData<List<Respond>>
+
+    fun getRespond(surveyAddress: String, index: Int): LiveData<List<Respond>>
 }

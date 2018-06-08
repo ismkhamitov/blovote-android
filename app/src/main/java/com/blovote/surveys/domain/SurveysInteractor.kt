@@ -31,6 +31,8 @@ interface SurveysInteractor {
 
     fun updateSurveyQuestionInfo(survey: Survey, category: QuestionCategory, index: Int) : Single<Survey>
 
+    fun updateSurveyAllQuestionsInfo(survey: Survey) : Single<Survey>
+
     fun checkAnswer(survey: Survey, questionIndex: Int, answers: List<String>) : Single<Boolean>
 
     fun uploadAnswer(survey: Survey, questionIndex: Int, answers: List<String>): Completable
@@ -40,4 +42,5 @@ interface SurveysInteractor {
 
     fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String) : Observable<List<Respond>>
 
+    fun getRespond(lifecycleOwner: LifecycleOwner, surveyAddress: String, index: Int): Observable<Respond>
 }

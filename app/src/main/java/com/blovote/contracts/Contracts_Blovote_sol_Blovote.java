@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicArray;
 import org.web3j.abi.datatypes.DynamicBytes;
@@ -150,12 +151,21 @@ public class Contracts_Blovote_sol_Blovote extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<byte[]> getRespondData(BigInteger qIndex, BigInteger respondIndex) {
+    public RemoteCall<Tuple2<String, byte[]>> getRespondData(BigInteger qIndex, BigInteger respondIndex) {
         final Function function = new Function(FUNC_GETRESPONDDATA, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(qIndex), 
                 new org.web3j.abi.datatypes.generated.Uint256(respondIndex)), 
-                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicBytes>() {}));
-        return executeRemoteCallSingleValueReturn(function, byte[].class);
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<DynamicBytes>() {}));
+        return new RemoteCall<Tuple2<String, byte[]>>(
+                new Callable<Tuple2<String, byte[]>>() {
+                    @Override
+                    public Tuple2<String, byte[]> call() throws Exception {
+                        List<Type> results = executeCallMultipleValueReturn(function);
+                        return new Tuple2<String, byte[]>(
+                                (String) results.get(0).getValue(), 
+                                (byte[]) results.get(1).getValue());
+                    }
+                });
     }
 
     public RemoteCall<Tuple2<BigInteger, byte[]>> getQuestionInfo(BigInteger index) {
