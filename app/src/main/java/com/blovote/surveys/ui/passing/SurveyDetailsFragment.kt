@@ -1,25 +1,38 @@
 package com.blovote.surveys.ui.passing
 
+import android.Manifest
+import android.arch.persistence.room.util.StringUtil
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.blovote.R
 import com.blovote.app.App
+import com.blovote.surveys.data.entities.Respond
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.domain.SurveysInteractor
 import com.blovote.surveys.ui.monitoring.AnswersActivity
 import com.blovote.surveys.ui.toReadableString
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import java.io.BufferedOutputStream
+import java.io.BufferedWriter
+import java.io.File
+import java.io.OutputStreamWriter
 import java.math.BigInteger
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class SurveyDetailsFragment : Fragment() {
@@ -146,8 +159,9 @@ class SurveyDetailsFragment : Fragment() {
                 }
             }
 
-
-            //TODO: handle export
+            buttonExportResults.onClick {
+                prepareExportSurveys()
+            }
         }
         buttonStart.isEnabled = true
         buttonStart.onClick {
@@ -156,7 +170,127 @@ class SurveyDetailsFragment : Fragment() {
     }
 
 
+    private fun prepareExportSurveys() {
+        val context = context ?: return
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            val activity = this.activity
+            if (activity != null) {
+                ActivityCompat.requestPermissions(activity,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSIONS_CODE)
+            }
+        } else {
+            exportSurveyAnswers()
+        }
+    }
+
+    private fun exportSurveyAnswers() {
+        val context = context ?: return
+        if (Environment.getExternalStorageState() != Environment.MEDIA_MOUNTED) {
+            AlertDialog.Builder(context)
+                    .setMessage("External storage is unavailable")
+                    .show()
+            return
+        }
+
+        val docsDir = getExportDir()
+        if (!docsDir.exists() && !docsDir.mkdirs()) {
+            AlertDialog.Builder(context)
+                    .setMessage("Unable to create directory for exporting")
+                    .show()
+            return
+        }
+
+        val dialog = AlertDialog.Builder(context)
+                .setView(R.layout.layout_progress_dialog)
+                .show()
+        dialog.findViewById<TextView>(R.id.loading_msg)?.text = getString(R.string.loading_responds)
+
+        disposable.add(surveysInteractor.loadAllRespondsInfo(address)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    surveysInteractor.getAllResponds(this, address)
+                            .observeOn(Schedulers.io())
+                            .subscribe( {
+                                dialog.dismiss()
+                                exportLoadedRespondsToFile()
+                            }, {
+                                dialog.dismiss()
+                                AlertDialog.Builder(context)
+                                        .setMessage(it.message)
+                                        .show()
+                            })
+
+
+                }, {
+                    dialog.dismiss()
+                    AlertDialog.Builder(context)
+                            .setMessage("Unable to load responds")
+                            .show()
+                }))
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            PERMISSIONS_CODE -> {
+                if (!grantResults.isEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    exportSurveyAnswers()
+                }
+            }
+        }
+    }
+
+    private fun exportLoadedRespondsToFile() {
+        disposable.add(Observable.combineLatest(surveysInteractor.getSurvey(address).toObservable(),
+                surveysInteractor.getAllResponds(this, address),
+                BiFunction<Survey, List<Respond>, Pair<Survey, List<Respond>>> { t1, t2 -> Pair(t1, t2) })
+                .take(1)
+                .subscribe { pair ->
+
+                    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+                    val filename = "blovote_$timeStamp.csv"
+                    val file = File(getExportDir(), filename)
+                    file.createNewFile()
+
+                    val writer = BufferedWriter(OutputStreamWriter(file.outputStream()))
+                    writer.use {
+                        writeSurveyRow(pair.first, it)
+                        writeResponds(pair.second, it)
+                    }
+
+                    Toast.makeText(this.context, "Surveys exported to: ${file.canonicalPath}",
+                            Toast.LENGTH_LONG).show()
+                })
+
+    }
+
+    private fun getExportDir() : File {
+        return File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "blovotes")
+    }
+
+    private fun writeSurveyRow(survey: Survey, writer: BufferedWriter) {
+        writer.write("Respondent;")
+        for (question in survey.questions) {
+            writer.write(question.title + ";")
+        }
+        writer.newLine()
+    }
+
+    private fun writeResponds(responds: List<Respond>, writer: BufferedWriter) {
+        for (i in 0 until responds.size) {
+            val num = i + 1
+            val respond = responds[i]
+            writer.write(num.toString() + ";")
+            respond.data.forEach { answers ->
+                writer.write( answers.data.joinToString(",") + ";")
+            }
+            writer.newLine()
+        }
+    }
+
     companion object {
+
+        private val PERMISSIONS_CODE = 42
 
         private val KEY_ADDRESS = "address"
         private val KEY_INDEX = "index"

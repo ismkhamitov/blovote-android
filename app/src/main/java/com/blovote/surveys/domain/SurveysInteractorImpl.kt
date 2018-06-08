@@ -80,11 +80,17 @@ class SurveysInteractorImpl(val surveysRepository: SurveysRepository,
     }
 
     override fun loadRespondInfo(surveyAddress: String, index: Int): Completable {
-        return surveysRepository.loadRespondInfo(surveyAddress, index).subscribeOn(Schedulers.computation())
+        return surveysRepository.loadRespondInfo(surveyAddress, index)
+                .subscribeOn(Schedulers.computation())
     }
 
-    override fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String): Observable<List<Respond>> {
-        return surveysRepository.getResponds(lifecycleOwner, surveyAddress)
+    override fun loadAllRespondsInfo(surveyAddress: String): Completable {
+        return surveysRepository.loadAllRespondsInfo(surveyAddress)
+                .subscribeOn(Schedulers.computation())
+    }
+
+    override fun getAllResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String): Observable<List<Respond>> {
+        return surveysRepository.getAllResponds(lifecycleOwner, surveyAddress)
                 .subscribeOn(Schedulers.computation())
     }
 

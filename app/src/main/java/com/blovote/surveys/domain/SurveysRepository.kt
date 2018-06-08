@@ -42,8 +42,9 @@ interface SurveysRepository {
 
     fun loadRespondInfo(surveyAddress: String, index: Int) : Completable
 
-    fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String) : Observable<List<Respond>>
+    fun loadAllRespondsInfo(surveyAddress: String): Completable
+
+    fun getAllResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String) : Observable<List<Respond>>
 
     fun getRespond(lifecycleOwner: LifecycleOwner, surveyAddress: String, index: Int): Observable<Respond>
-
 }

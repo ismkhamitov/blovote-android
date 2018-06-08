@@ -202,26 +202,11 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
     override fun loadRespondInfo(surveyAddress: String, index: Int): Completable {
         return Completable.create {
             try {
-                val blovote = getBlovoteContract(surveyAddress)
-                val questionsCount = blovote.questionsCount.send().toInt()
-
-                val data : MutableList<Answers> = ArrayList()
-                for (i in 0 until questionsCount) {
-                    val answersArray = blovote.getRespondData(i.toBigInteger(), index.toBigInteger()).send()
-                    val questionInfo = blovote.getQuestionInfo(i.toBigInteger()).send()
-                    val type = QuestionType.fromContractQuestionType(questionInfo.value1)
-
-                    val answer = if (type == QuestionType.Text) {
-                        listOf(answersArray.value2.toString(Charset.forName("UTF-8")))
-                    } else {
-                        answersArray.value2.map { it.toString() }
-                    }
-
-                    data.add(Answers(answer))
+                val respond = surveysStorage.getRespond(surveyAddress, index).value
+                if (respond == null || respond.isEmpty()) {
+                    val blovote = getBlovoteContract(surveyAddress)
+                    surveysStorage.saveRespond(surveyAddress, index, loadRespondAnswers(blovote, index))
                 }
-
-
-                surveysStorage.saveRespond(surveyAddress, index, data)
                 if (!it.isDisposed) {
                     it.onComplete()
                 }
@@ -232,10 +217,54 @@ class SurveysRepositoryImpl(private val surveysStorage: SurveysStorage,
                 }
             }
         }
-
     }
 
-    override fun getResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String): Observable<List<Respond>> {
+    override fun loadAllRespondsInfo(surveyAddress: String) : Completable {
+        return Completable.create {
+            try {
+                val blovote = getBlovoteContract(surveyAddress)
+                val respsCount = blovote.currentRespondentsCount().send().toInt()
+
+                for (i in 0 until respsCount) {
+                    val respond = surveysStorage.getRespond(surveyAddress, i).value
+                    if (respond == null || respond.isEmpty()) {
+                        surveysStorage.saveRespond(surveyAddress, i, loadRespondAnswers(blovote, i))
+                    }
+                }
+
+                if (!it.isDisposed) {
+                    it.onComplete()
+                }
+
+            } catch (e: Exception) {
+                if (!it.isDisposed) {
+                    it.onError(e)
+                }
+            }
+        }
+    }
+
+    private fun loadRespondAnswers(blovote: Contracts_BlovoteImpl_sol_BlovoteImpl, index: Int) : List<Answers> {
+        val data : MutableList<Answers> = ArrayList()
+        val questionsCount = blovote.questionsCount.send().toInt()
+        for (i in 0 until questionsCount) {
+            val answersArray = blovote.getRespondData(i.toBigInteger(), index.toBigInteger()).send()
+            val questionInfo = blovote.getQuestionInfo(i.toBigInteger()).send()
+            val type = QuestionType.fromContractQuestionType(questionInfo.value1)
+
+            val answer = if (type == QuestionType.Text) {
+                listOf(answersArray.value2.toString(Charset.forName("UTF-8")))
+            } else {
+                answersArray.value2.map { it.toString() }
+            }
+
+            data.add(Answers(answer))
+        }
+
+        return data
+    }
+
+    override fun getAllResponds(lifecycleOwner: LifecycleOwner, surveyAddress: String): Observable<List<Respond>> {
         return Observable.create {
             surveysStorage.getResponds(surveyAddress).observe(lifecycleOwner,
                     Observer<List<Respond>> { r -> it.onNext(r!!) })

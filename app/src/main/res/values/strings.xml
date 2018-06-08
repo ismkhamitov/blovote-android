@@ -72,6 +72,7 @@
     <string name="loading">Loading…</string>
     <string name="error_init_wallet">Error initializing Ethereum wallet</string>
     <string name="msg_loading_wallet">Loading wallet…</string>
+    <string name="loading_responds">Loading responds…</string>
 
     <string-array name="eth_unit">
         <item>wei</item>

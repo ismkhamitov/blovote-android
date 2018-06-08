@@ -9,6 +9,7 @@ import com.blovote.app.App
 import com.blovote.app.BlovoteActivity
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.domain.SurveysInteractor
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.layout_answers_activity.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -34,6 +35,7 @@ class AnswersActivity : BlovoteActivity() {
     override fun onStart() {
         super.onStart()
         disposable.add(surveysInteractor.getSurvey(intent.getStringExtra(KEY_SURVEY_ADDRESS))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { survey, throwable ->
                     if (throwable != null) {
                         Toast.makeText(this, "Unable to load survey", Toast.LENGTH_SHORT)
