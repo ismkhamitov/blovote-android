@@ -210,6 +210,7 @@ class SurveyDetailsFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     surveysInteractor.getAllResponds(this, address)
+                            .take(1)
                             .observeOn(Schedulers.io())
                             .subscribe( {
                                 dialog.dismiss()

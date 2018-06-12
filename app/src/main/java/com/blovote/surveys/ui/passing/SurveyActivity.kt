@@ -1,34 +1,22 @@
 package com.blovote.surveys.ui.passing
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.widget.TextView
 import com.blovote.R
 import com.blovote.app.App
 import com.blovote.app.BlovoteActivity
-import com.blovote.app.CommonProgressFragment
-import com.blovote.surveys.data.entities.Question
+import com.blovote.app.common.CommonProgressFragment
+import com.blovote.app.common.CommonSuccessFragment
 import com.blovote.surveys.data.entities.QuestionCategory
 import com.blovote.surveys.data.entities.Survey
 import com.blovote.surveys.data.entities.SurveyState
 import com.blovote.surveys.domain.SurveysInteractor
-import com.blovote.surveys.domain.SurveysRepository
-import com.blovote.surveys.ui.creation.CreateSurveyActivity
-import com.blovote.surveys.ui.toReadableString
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.layout_survey_details.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.web3j.abi.datatypes.Bool
-import java.math.BigInteger
 import javax.inject.Inject
 
 class SurveyActivity : BlovoteActivity(), QuestionPassListener {
@@ -94,7 +82,8 @@ class SurveyActivity : BlovoteActivity(), QuestionPassListener {
         val msg = if (survey.state != SurveyState.Active) {
             getString(R.string.msg_survey_not_active)
         } else if (!hasNotAnsweredQuestions()) {
-            getString(R.string.question_answered)
+            updateQuestionFragment(CommonSuccessFragment.newInstance(getString(R.string.msg_passed_successfully)), true)
+            return
         } else null
 
         if (msg != null) {
@@ -164,7 +153,7 @@ class SurveyActivity : BlovoteActivity(), QuestionPassListener {
         if (needToLoadDetails) {
             disposable.add(surveysInteractor.updateSurveyQuestionInfo(survey, category, index)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { survey, throwable ->
+                    .subscribe { _, _ ->
                         showQuestion(category, index)
                     }
             )

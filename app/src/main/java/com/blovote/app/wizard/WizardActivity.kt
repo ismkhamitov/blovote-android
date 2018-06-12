@@ -1,14 +1,13 @@
 package com.blovote.app.wizard
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.blovote.R
 import com.blovote.account.data.AccountStorage
 import com.blovote.app.App
-import com.blovote.app.CommonProgressFragment
+import com.blovote.app.common.CommonProgressFragment
 import com.blovote.surveys.ui.MainSurveysActivity
 import com.blovote.wallet.ui.WalletInitFragment
 import io.reactivex.android.schedulers.AndroidSchedulers

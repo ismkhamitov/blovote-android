@@ -9,7 +9,8 @@ import android.view.MenuItem
 import com.blovote.R
 import com.blovote.app.App
 import com.blovote.app.BlovoteActivity
-import com.blovote.app.CommonProgressFragment
+import com.blovote.app.common.CommonProgressFragment
+import com.blovote.app.common.CommonSuccessFragment
 import com.blovote.surveys.data.entities.QuestionCategory
 import com.blovote.surveys.domain.SurveysInteractor
 import com.blovote.surveys.presentation.SurveyCreationPresenter
@@ -91,12 +92,18 @@ class CreateSurveyActivity : BlovoteActivity(), QuestionTitleClickListener {
                                 .replace(android.R.id.content, CommonProgressFragment.newInstance(getString(R.string.msg_progress_survey_creation)), TAG_CREATION_PROGRESS)
                                 .addToBackStack(TAG_CREATION_PROGRESS)
                                 .commit()
-                        SurveyCreationPresenter.CreationProgressState.Success -> finish()
+                        SurveyCreationPresenter.CreationProgressState.Success -> {
+                            surveysInteractor.requestSurveysUpdate().subscribe()
+                            supportFragmentManager.beginTransaction()
+                                    .replace(android.R.id.content,
+                                            CommonSuccessFragment.newInstance(getString(R.string.msg_survey_created)))
+                                    .commit()
+                        }
                         SurveyCreationPresenter.CreationProgressState.Failed -> {
                             finish()
                             AlertDialog.Builder(applicationContext)
-                                    .setTitle("Error")
-                                    .setMessage("Unable to create survey")
+                                    .setTitle(getString(R.string.error))
+                                    .setMessage(getString(R.string.msg_unable_to_create_survey))
                                     .show()
                         }
                         else -> { }

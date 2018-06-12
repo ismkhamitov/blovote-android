@@ -1,4 +1,4 @@
-package com.blovote.app
+package com.blovote.app.common
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

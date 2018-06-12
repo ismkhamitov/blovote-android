@@ -2,8 +2,8 @@
     <string name="app_name">Blovote</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Blovote App</string>
+    <string name="nav_header_subtitle">by Ismail Khamitov</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="questions_descr">%s questions</string>
@@ -73,6 +73,10 @@
     <string name="error_init_wallet">Error initializing Ethereum wallet</string>
     <string name="msg_loading_wallet">Loading wallet…</string>
     <string name="loading_responds">Loading responds…</string>
+    <string name="msg_passed_successfully">Survey was passed successfully</string>
+    <string name="msg_survey_created">Survey created successfully</string>
+    <string name="error">Error</string>
+    <string name="msg_unable_to_create_survey">Unable to create survey</string>
 
     <string-array name="eth_unit">
         <item>wei</item>
